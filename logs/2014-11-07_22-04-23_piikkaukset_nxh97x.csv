@@ -1,0 +1,4 @@
+UserId,ItemId,User,Item,Value,Date,IP
+2,1,Mika Kuokkanen,Olut,1,2014-11-07 22:04:10,::1
+2,2,Mika Kuokkanen,Siideri,1,2014-11-07 22:04:10,::1
+2,3,Mika Kuokkanen,Limu,1,2014-11-07 22:04:11,::1

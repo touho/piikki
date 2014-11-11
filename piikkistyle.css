@@ -1,0 +1,66 @@
+body {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 16px;
+}
+
+#container {
+	width: 600px;
+	margin: 0 auto;
+}
+
+h1 {
+	font-size: 40px;
+}
+
+#login {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+
+#piikkausbuttons {
+	width: 100%;
+	overflow: auto;
+}
+
+.button {
+	color: #000;
+	font-size: 20px;
+	border: 3px solid #cca741;
+	border-radius: 10px;
+	padding: 20px;
+	background: #e1cf42;
+	cursor: pointer;
+	clear: right;
+	float: left;
+	margin: 20px;
+}
+
+.button:first-child {
+  margin-left: 0px;
+}
+
+#nameinput {
+
+	height: 20px;
+	width: 400px;
+}
+
+#autocomplete {
+	position: absolute;
+	width: 300px;
+	background: #bbeeff;
+	border: 2px solid #99ccdd;
+	border-radius: 8px;
+	padding: 4px;
+}
+
+#autocomplete div {
+	cursor: pointer;
+	padding: 2px;
+	border-radius: 3px;
+}
+
+#autocomplete div.selected {
+	background: #ddffff;
+}

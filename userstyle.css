@@ -1,0 +1,16 @@
+
+table, table th, table td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+tr td:first-child {
+	font-weight: bold;
+	text-align: right;
+
+}
+
+table {
+	border: 1px solid #aaa;
+	margin-bottom: 20px;
+}
