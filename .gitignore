@@ -1,0 +1,4 @@
+*.py[cod]
+
+backend/config.py
+logs/*.csv

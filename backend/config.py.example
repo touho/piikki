@@ -1,0 +1,4 @@
+db_host='localhost'
+db_user='piikki'
+db_pass=''
+db_database='piikki'

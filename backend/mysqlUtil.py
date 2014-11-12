@@ -1,12 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from backend import config
+
 import MySQLdb
 
 def getConnection():
 	try:
 		# url, user, pass, db
-		con = MySQLdb.connect("localhost", "piikki", "kaljaa", "piikki")
+		con = MySQLdb.connect(config.db_host, config.db_user, config.db_pass, config.db_database)
 	except:
 		return None
 	return con
