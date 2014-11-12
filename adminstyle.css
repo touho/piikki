@@ -43,11 +43,3 @@ tr:first-child {
 .disabledItem td:nth-child(4) {
 	font-weight: bold;
 }
-
-.toBeRemovedItem {
-	color: red;
-}
-
-.toBeRemovedItem td:nth-child(5){
-	font-weight: bold;
-}

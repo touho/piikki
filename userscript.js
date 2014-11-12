@@ -26,19 +26,18 @@ function UserUtil()
 			{
 				var userInfo = results.userInformation;
 				var piikkausInfo = results.piikkausInformation;
-				var previousCheckpoint = results.previousCheckpoint;
+				var paymentInformation = results.paymentInformation;
 
 
 				// User Info:
 
 				var name = userInfo[0][1];
 				var email = userInfo[0][2];
-				var balance = userInfo[0][3];
-				var piikkausValue = userInfo[0][4];
-				var payments = userInfo[0][5];
+				var isAdmin = userInfo[0][3] == "1";
+				var balance = userInfo[0][4].toFixed(2);
 
 				content.empty();
-				var table;
+				var table,div;
 
 				function addRow(key, value, title) {
 					var tr = $("<tr/>");
@@ -48,31 +47,48 @@ function UserUtil()
 					table.append(tr);
 				}
 
+				function addLine(time, text) {
+					var rowDiv = $("<div/>");
+					var dateSpan = $("<span/>").text(time).addClass("dateSpan");
+					var textSpan = $("<span/>").text(text).addClass("textSpan");
+					rowDiv.append(dateSpan).append(textSpan);
+					div.append(rowDiv);
+				}
+
 				function addBlock(text) {
 					content.append("<b>" + text + "</b>");
 					table = $("<table/>");
+					div = $("<div/>").addClass("divBlock");
 				}
-
 
 				addBlock("Tietosi:");
 				addRow("Nimi:", name);
 				addRow("Email:", email);
+				addRow("Saldo:", balance + "€")
+				if (isAdmin)
+					addRow("Admin:", "Kyllä!");
 				content.append(table);
 
 
-				addBlock("Rahatilanteesi:");
-				addRow("Saldosi "+previousCheckpoint+":", "= " + (balance - payments).toFixed(2) + " €");
-				addRow("Merkatut maksut sen jälkeen:", "+ " + payments.toFixed(2) + " €");
-				addRow("", "= " + balance.toFixed(2) + " €");
-				addRow("Piikkaukset "+previousCheckpoint+" jälkeen:", "– " + piikkausValue.toFixed(2) + " €", previousCheckpoint + " lähtien");
-				addRow("Saldo piikkaukset huomioiden:", "= " + (balance - piikkausValue).toFixed(2) + " €");
-				content.append(table);
+				addBlock("Viimeisimmät maksusi:");
+				for (var i = 0; i < paymentInformation.length; i++) {
+					var value = parseInt(paymentInformation[i][1]);
+					var date = "[" + paymentInformation[i][2] + "] ";
+
+					addLine(date, value + "€");
+				};
+				content.append(div);
 
 
-				addBlock("Piikkaukset "+previousCheckpoint+" jälkeen:");
-				for (var i = 0; i < piikkausInfo.length; i++)
-					addRow(piikkausInfo[i][1] + ":", piikkausInfo[i][2] + " kpl");
-				content.append(table);
+				addBlock("Viimeisimmät piikkauksesi:");
+				for (var i = 0; i < piikkausInfo.length; i++) {
+					var name = piikkausInfo[i][1];
+					var value = parseInt(piikkausInfo[i][2]);
+					var date = "[" + piikkausInfo[i][3] + "] ";
+
+					addLine(date, name + (value == 1 ? "" : " x " + value));
+				};
+				content.append(div);
 
 			}
 		});

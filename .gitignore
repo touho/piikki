@@ -1,4 +1,4 @@
 *.py[cod]
-
+tests
 backend/config.py
 logs/*.csv

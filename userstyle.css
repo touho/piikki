@@ -14,3 +14,13 @@ table {
 	border: 1px solid #aaa;
 	margin-bottom: 20px;
 }
+
+.divBlock {
+	margin-bottom: 20px;
+}
+
+.dateSpan {
+	color: #777;
+	font-size: 13px;
+	margin-right: 10px;
+}

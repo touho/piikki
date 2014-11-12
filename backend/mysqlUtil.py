@@ -47,7 +47,8 @@ def createTables():
 			id int not null auto_increment, 
 			name varchar(255) not null, 
 			email varchar(255), 
-			balance float,
+			isAdmin boolean,
+			password varchar(255),
 			primary key (id) );"""
 		
 		createItemsTable = """create table if not exists items (
@@ -55,13 +56,13 @@ def createTables():
 			name varchar(255) not null, 
 			price float,
 			visible boolean,
-			toBeRemoved boolean,
 			primary key (id) );"""
 
 		createPiikkauksetTable = """create table if not exists piikkaukset (
 			userId int not null, 
 			itemId int not null,
 			value int,
+			price float,
 			date datetime,
 			ip varchar(127));"""
 
@@ -105,7 +106,14 @@ def getAllItems():
 	return fetchWithSQLCommand("select * from items order by name;")
 
 def getAllPiikkaukset():
-	return fetchWithSQLCommand("""select piikkaukset.userId as userId, piikkaukset.itemId as itemId, users.name as userName, items.name as itemName, piikkaukset.value as value, DATE_FORMAT(piikkaukset.date, '%Y-%m-%d %H:%i:%S') as date, piikkaukset.ip as ip
+	return fetchWithSQLCommand("""select piikkaukset.userId as userId, 
+			piikkaukset.itemId as itemId, 
+			users.name as userName, 
+			items.name as itemName, 
+			piikkaukset.value as value, 
+			piikkaukset.price as price, 
+			DATE_FORMAT(piikkaukset.date, '%Y-%m-%d %H:%i:%S') as date, 
+			piikkaukset.ip as ip
 			from piikkaukset left join users on piikkaukset.userId = users.id left join items on piikkaukset.itemId = items.id
 			order by piikkaukset.date;""")
 

@@ -24,14 +24,14 @@ def execute(fieldStorage):
 		mysqlUtil.dropTables()
 		mysqlUtil.createTables()
 		return {"success": True}
-	elif subAction == "checkpoint":
-		ret = checkpoint()
+	elif subAction == "sendPaymentRequest":
+		ret = sendPaymentRequest()
 		return {"success": ret == "ok", "message": ret}
 	else:
 		return "unknown subAction " + str(subAction)
 
 
-def checkpoint():
+def sendPaymentRequest():
 
 	# Balance = Balance - Piikkausten summa
 	sql = """
@@ -45,7 +45,7 @@ def checkpoint():
 		as sum on users.id = sum.userId
 		set users.balance = IFNULL(users.balance, 0) - IFNULL(sum.piikkaukset, 0);
 	"""
-
+	"""
 	con = mysqlUtil.getConnection()
 	if not con:
 		return "fail"
@@ -81,6 +81,10 @@ def checkpoint():
 
 	sql = "delete from items where items.toBeRemoved = 1;"
 	mysqlUtil.commitSQLCommand(sql)
+	"""
+
+	sendEmail()
+	
 	return "ok"
 
 def writeLogFile(mysqlData, name, datestring):

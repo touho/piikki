@@ -1,5 +1,6 @@
 Installation:
 
+- Required python packages: mysqlDb, passlib
 - Mysql permissions, see backend/mysqlUtil.py getConnection() function
 - logs folder permissions
 - enable server.cgi execution

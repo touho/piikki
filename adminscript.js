@@ -78,18 +78,18 @@ function AdminUtil()
 				content.append(buttonContainer)
 				content.append("<br/><br/>");
 			}
-			addAdminAction("Announce Checkpoint", "When you announce checkpoint", [
-				"User balance is recalculated using piikkaukset information",
-				"Piikkaukset will be dumped in to a log file", 
-				"Piikkaukset will be reseted"],
-				"Announcing Checkpoint. Are you sure?", {subAction: "checkpoint"}, "Checkpoint announced!", false);
+			addAdminAction("Send Payment Requests", "When you request payment", [
+				"An email will be sent to all users",
+				"Email will tell the current balance of the user", 
+				"Email will include the information how to pay"],
+				"Sending Payment Request. Are you sure?", {subAction: "sendPaymentRequest"}, "Payment request sent!", false);
 
 			addAdminAction("Reset Database", "When you reset database", [
 				"Users are deleted", 
 				"Items are deleted",
 				"Piikkaukset are deleted",
 				"Payments are deleted",
-				"History logs will not be deleted"],
+				"Logs will not be deleted"],
 				"Are you sure to delete EVERYTHING?", {subAction: "reset"}, "Database reseted!", true);
 
 			content.append("<hr/>");
@@ -145,6 +145,10 @@ function AdminUtil()
 			var things = results[smallCaseNames];
 
 			content.empty();
+			if (isUsers && things.length == 0) {
+				var span = $("<span/>").css({"color": "red", "font-weight": "bold"}).text("NOTE! You should add admin user first!");
+				content.append(span).append("<br/>");
+			}
 			content.append(bigCaseNames+": " + things.length + "<br/>");
 
 			function addThingToTable(thingArray, table) {
@@ -154,41 +158,40 @@ function AdminUtil()
 				if (isUsers)
 				{
 					var email = $("<td/>").text(thingArray[2]);
-					var balance = $("<td/>").text(thingArray[3].toFixed(2)).attr("title", 
-						"Balance means how much user has money in piikki bank. "+
-						"It is updated when payment is reported and when checkpoint is announced.");
-					var piikkaukset = $("<td/>").text(thingArray[4]).attr("title", 
-						"Piikkaukset is total value how much user's piikkaukset would cost. " + 
-						"When checkpoint is announced, the value is subtracted from balance and then reseted.");
+					var isAdmin = $("<td/>").text(thingArray[3] == "1" ? "Yes" : "No");
+					var payments = $("<td/>").text(thingArray[4].toFixed(2)).attr("title", 
+						"Piikkaukset is total value how much user's piikkaukset have cost.");
+					var piikkaukset = $("<td/>").text(thingArray[5].toFixed(2)).attr("title", 
+						"Piikkaukset is total value how much user has piikked.");
+					var balance = $("<td/>").text(thingArray[6].toFixed(2)).attr("title", 
+						"Balance means how much user has money in piikki bank. Balance = Payments - Piikkaukset");
 				}
 				else
 				{
 					var price = $("<td/>").text(thingArray[2].toFixed(2));
 					var visible = $("<td/>").text(thingArray[3] == "1" ? "Yes" : "No");
-					var toBeRemoved = $("<td/>").text(thingArray[4] == "1" ? "Yes" : "No");
-					piikkaukset = $("<td/>").text(thingArray[5]).attr("title", 
+					piikkaukset = $("<td/>").text(parseInt(thingArray[4])).attr("title", 
 						"Piikkaukset means how many time this item has been piikke'd.");
+					var earnings = $("<td/>").text(thingArray[5].toFixed(2)).attr("title", 
+						"Earnings means how much piikkaukset have cost in total.");
 
 					if (visible.text() == "No") {
 						tr.addClass("disabledItem");
-					}
-					if (toBeRemoved.text() == "Yes") {
-						tr.addClass("toBeRemovedItem");
 					}
 				}
 
 				var editButton = $("<button/>").text("Edit").click(function() {
 					var nameInput = $("<input/>").attr("type", "text").val(name.text());
 					var emailInput = $("<input/>").attr("type", "text").val(email ? email.text() : "");
-					//var balanceInput = $("<input/>").attr("type", "text").val(balance ? balance.text() : "");
 					var priceInput = $("<input/>").attr("type", "text").val( price ? price.text() : "");
 
 					var visibleInput = $("<input/>").attr("type", "checkbox");
 					if (visible && visible.text() == "Yes") visibleInput.attr("checked", "checked");
 					else visibleInput.removeAttr("checked");
-					var toBeRemovedInput = $("<input/>").attr("type", "checkbox");
-					if (toBeRemoved && toBeRemoved.text() == "Yes") toBeRemovedInput.attr("checked", "checked");
-					else toBeRemovedInput.removeAttr("checked");
+
+					var isAdminInput = $("<input/>").attr("type", "checkbox");
+					if (isAdmin && isAdmin.text() == "Yes") isAdminInput.attr("checked", "checked");
+					else isAdminInput.removeAttr("checked");
 
 
 					var submitButton = $("<button/>").text("Submit changes!").click(function(){
@@ -198,10 +201,9 @@ function AdminUtil()
 							id: parseInt(id.text()),
 							name: nameInput.val(),
 							email: emailInput.val(),
-							//balance: parseFloat(balanceInput.val()),
 							price: parseFloat(priceInput.val()),
 							visible: visibleInput.is(":checked") ? 1 : 0,
-							toBeRemoved: toBeRemovedInput.is(":checked") ? 1 : 0
+							isAdmin: isAdminInput.is(":checked") ? 1 : 0
 						}, function(editResults) {
 							if (editResults.success)
 								rebuildCommand();
@@ -214,13 +216,12 @@ function AdminUtil()
 					if (isUsers)
 					{
 						inputArea.append("<br/>Email: ").append(emailInput);
-						//.append(" Balance: ").append(balanceInput);
+						inputArea.append("<br/>Is Admin: ").append(isAdminInput);
 					}
 					else
 					{
 						inputArea.append("<br/>Price: ").append(priceInput);
 						inputArea.append("<br/>Visible: ").append(visibleInput);
-						inputArea.append("<br/>Remove on next checkpoint: ").append(toBeRemovedInput);
 					}
 
 					inputArea.append("<br/>");
@@ -290,6 +291,23 @@ function AdminUtil()
 						valueInput.focus();
 					});
 
+					var resetPasswordButton = $("<button/>").text("Reset Password").click(function() {
+						if (!confirm("Are you sure you want to reset user's password and set it by email?")) return;
+						piikki.sendAjax("server.cgi", {
+							action: action,
+							subAction: "resetPassword",
+							id: parseInt(id.text())
+						}, function(resetResults) {
+							if (resetResults.success)
+							{
+								alert("Password reseted and sent as email.");
+								rebuildCommand();
+							}
+							else
+								admin.debugLog("Error while reseting password: " + resetResults.message);
+						});
+					});
+
 					var removeButton = $("<button/>").text("Remove").click(function() {
 						if (isUsers)
 							var confirmation = "Are you sure you want to remove user '" + name.text() + "' with balance of " + balance.text() + "?";
@@ -317,22 +335,24 @@ function AdminUtil()
 				if (isUsers)
 				{
 					tr.append(email);
+					tr.append(isAdmin);
+					tr.append(payments);
+					tr.append(piikkaukset);
 					tr.append(balance);
 				}
 				else
 				{
 					tr.append(price);
 					tr.append(visible);
-					tr.append(toBeRemoved);
+					tr.append(piikkaukset);
+					tr.append(earnings);
 				}
-
-				//Items and Users both have piikkaukset, the meaning is different, tho.
-				tr.append(piikkaukset);
 
 				var td = $("<td/>").append(editButton);
 				if (isUsers)
 				{
 					td.append(paymentButton);
+					td.append(resetPasswordButton);
 					td.append(removeButton);
 				}
 
@@ -347,13 +367,16 @@ function AdminUtil()
 				"<th>Name</th>" + ( isUsers ?
 
 				("<th>Email</th>" +
-				"<th>Balance</th>" +
-				"<th>Piikkausten Arvo</th>") 
+				"<th>Is Admin</th>" + 
+				"<th>Payments</th>" + 
+				"<th>Piikkausten Arvo</th>" +
+				"<th>Balance</th>"
+				) 
 				: 
 				("<th>Price</th>" + 
 				"<th>Visible</th>" + 
-				"<th>To Be Removed</th>" +
-				"<th>Piikkaukset</th>")
+				"<th>Piikkaukset</th>" + 
+				"<th>Earnings</th>")
 				) +
 				"<th></th>"
 			));
@@ -364,16 +387,21 @@ function AdminUtil()
 			content.append(tableContainer).append("<br/>");
 			if (isUsers)
 			{
+				var totalPayments = 0;
+				table.find("tr").find("td:eq(4)").each(function(){
+					totalPayments += parseFloat($(this).text());
+				});
 				var totalBalance = 0;
-				table.find("tr").find("td:eq(3)").each(function(){
+				table.find("tr").find("td:eq(6)").each(function(){
 					totalBalance += parseFloat($(this).text());
 				});
 				var totalPiikkaustenArvo = 0;
-				table.find("tr").find("td:eq(4)").each(function(){
+				table.find("tr").find("td:eq(5)").each(function(){
 					totalPiikkaustenArvo += parseFloat($(this).text());
 				});
+				content.append("Total Payments: "+totalPayments.toFixed(2)+"<br/>");
+				content.append("Total Piikkausten Arvo: "+totalPiikkaustenArvo.toFixed(2)+"<br/>");
 				content.append("Total Balance: "+totalBalance.toFixed(2)+"<br/>");
-				content.append("Total Piikkausten Arvo: "+totalPiikkaustenArvo+"<br/>");
 			}
 
 			var inputArea = $("<div/>").css({
@@ -387,6 +415,8 @@ function AdminUtil()
 				var emailInput = $("<input/>").attr("type", "text");
 				var priceInput = $("<input/>").attr("type", "text");
 				var visibleInput = $("<input/>").attr("type", "checkbox").attr("checked", "checked");
+				var isAdminInput = $("<input/>").attr("type", "checkbox");
+				if (things.length == 0) isAdminInput.attr("checked", "checked");
 				var addButton2 = $("<button/>").text("Add!").click(function(){
 					piikki.sendAjax("server.cgi", {
 						action: action,
@@ -394,6 +424,7 @@ function AdminUtil()
 						name: nameInput.val(),
 						email: emailInput.val(),
 						visible: visibleInput.is(":checked") ? 1 : 0,
+						isAdmin: isAdminInput.is(":checked") ? 1 : 0,
 						price: parseFloat(priceInput.val())
 					}, function(addResults) {
 						if (addResults.success)
@@ -404,9 +435,11 @@ function AdminUtil()
 				});
 				inputArea.empty().append("Add new "+smallCaseName+":<br/>")
 					.append("Name: ").append(nameInput);
+
 				if (isUsers)
 				{
 					inputArea.append("<br/>Email: ").append(emailInput);
+					inputArea.append("<br/>Is Admin: ").append(isAdminInput);
 				}
 				else
 				{
@@ -450,6 +483,7 @@ function AdminUtil()
 					"<th>UserName</th>" +
 					"<th>ItemName</th>" +
 					"<th>Value</th>" +
+					"<th>Price</th>" +
 					"<th>Date</th>" + 
 					"<th>IP</th>"
 				));
@@ -462,7 +496,8 @@ function AdminUtil()
 					.append($("<td/>").text(item[3]))
 					.append($("<td/>").text(item[4]))
 					.append($("<td/>").text(item[5]))
-					.append($("<td/>").text(item[6]));
+					.append($("<td/>").text(item[6]))
+					.append($("<td/>").text(item[7]));
 					table.append(tr);
 				}
 
@@ -528,7 +563,7 @@ function AdminUtil()
 				var filenames = results.filenames;
 				var folder = results.folder;
 				
-				var code = "List of log files. Most recent files first. Random string at the end of name is for security.<br/><br/>";
+				var code = "TODO<br/><br/>";
 
 				for (var i = filenames.length - 1; i >= 0; i--) {
 					code += "<a href='" + folder + "/" + filenames[i] + "'>" + filenames[i] + "</a><br/>";

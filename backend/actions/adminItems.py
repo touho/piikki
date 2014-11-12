@@ -26,10 +26,17 @@ def execute(fieldStorage):
 def get():
 	#result = mysqlUtil.getAllItems()
 
-	sql = """select items.id as id, items.name as name, items.price as price, items.visible as visible, items.toBeRemoved as toBeRemoved, CAST(IFNULL(SUM(piikkaukset.value),0) as SIGNED) as piikkaukset
-		from items
-		left join piikkaukset on items.id = piikkaukset.itemId
-		group by items.id;"""
+	sql = """
+select items.id as id,
+items.name as name,
+items.price as price,
+items.visible as visible,
+CAST(IFNULL(SUM(piikkaukset.value),0) as SIGNED) as piikkaukset,
+IFNULL(SUM(piikkaukset.price),0) as earnings
+from items
+left join piikkaukset on items.id = piikkaukset.itemId
+group by items.id;
+	"""
 	result = mysqlUtil.fetchWithSQLCommand(sql);
 
 	if not result == None:
@@ -45,15 +52,14 @@ def add(fieldStorage):
 	price = float(fieldStorage["price"].value)
 	visible = int(fieldStorage["visible"].value)
 
-	sql = "insert into items (name, price, visible, toBeRemoved) VALUES('"+name+"', "+str(price)+", "+str(visible)+", 0);"
+	sql = "insert into items (name, price, visible) VALUES('"+name+"', "+str(price)+", "+str(visible)+");"
 	if mysqlUtil.commitSQLCommand(sql) > 0:
 		return "ok"
 	return "fail"
 
 def edit(fieldStorage):
 	if (not "name" in fieldStorage or not "price" in fieldStorage or
-		not "id" in fieldStorage or not "visible" in fieldStorage or
-		not "toBeRemoved" in fieldStorage):
+		not "id" in fieldStorage or not "visible" in fieldStorage):
 		return "invalid sub parameters. name, price and id needed"
 
 
@@ -61,10 +67,9 @@ def edit(fieldStorage):
 	name = fieldStorage["name"].value
 	price = float(fieldStorage["price"].value)
 	visible = int(fieldStorage["visible"].value)
-	toBeRemoved = int(fieldStorage["toBeRemoved"].value)
 
 
-	sql = "update items set name='"+name+"', price="+str(price)+", visible="+str(visible)+", toBeRemoved="+str(toBeRemoved)+" where id = " + str(id) + ";"
+	sql = "update items set name='"+name+"', price="+str(price)+", visible="+str(visible)+" where id = " + str(id) + ";"
 	if mysqlUtil.commitSQLCommand(sql) > 0:
 		return "ok"
 	return "fail"

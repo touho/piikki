@@ -10,40 +10,45 @@ def execute(fieldStorage):
 	userId = int(fieldStorage["userId"].value)
 
 	if subAction == "get":
-		sql = """select users.id as id, users.name as name, users.email as email,
-			users.balance as balance,
-			IFNULL(ROUND(SUM(items.price), 2), 0) as piikkaukset,
-			IFNULL(paymentsSum,0)
-			from users
-			left join piikkaukset on users.id = piikkaukset.userId
-			left join items on piikkaukset.itemId = items.id
-			left join (
-			select payments.userId as userId, IFNULL(ROUND(SUM(payments.value), 2), 0) as paymentsSum
-			from payments
-			group by payments.userId
-			) as payments on users.id = payments.userId
-			where users.id = """+ str(userId) + """
-			group by users.id;"""
+		sql = """
+select id, name, email, isAdmin,
+(ROUND(IFNULL(SUM(payments.value),0),2)-piikkaukset) as balance
+from
+(select id, name, email, isAdmin, ROUND(IFNULL(SUM(piikkaukset.price),0),2) as piikkaukset
+from users
+left join piikkaukset on users.id = piikkaukset.userId
+group by users.id) as subTable
+left join payments on subTable.id = payments.userId
+where subTable.id = """+ str(userId) + """
+group by subTable.id;
+		"""
 		userInformation = mysqlUtil.fetchWithSQLCommand(sql);
 
 		sql = """
-			select items.id as id, items.name as name, CAST(IFNULL(mypiikkaukset.value,0) as SIGNED) as count
-			from items
-			left join (
-			select itemId, SUM(value) as value from piikkaukset
-			where piikkaukset.userId = """+str(userId)+"""
-			group by userId, itemId
-			) as mypiikkaukset on items.id = mypiikkaukset.itemId
- 			where items.visible = 1 or mypiikkaukset.value > 0
-			group by items.id;
+select id, name, value, DATE_FORMAT(date, '%a %d.%m.%Y %H:%i:%S') as formattedDate
+from piikkaukset
+left join items on items.id = itemId
+where userId = """+ str(userId) + """
+order by date desc
+limit 10;
 		"""
 		piikkausInformation = mysqlUtil.fetchWithSQLCommand(sql);
+
+		sql = """
+select userId, value, DATE_FORMAT(date, '%d.%m.%Y') as formattedDate
+from payments
+where userId = """+ str(userId) + """
+order by date desc
+limit 3;
+		"""
+		paymentInformation = mysqlUtil.fetchWithSQLCommand(sql);
 
 		return {
 			"success": True,
 			"userInformation": userInformation,
 			"piikkausInformation": piikkausInformation,
-			"previousCheckpoint": util.getLastCheckpointDate()}
+			"paymentInformation": paymentInformation
+		}
 	else:
 		return "unknown subAction " + str(subAction)
 		
