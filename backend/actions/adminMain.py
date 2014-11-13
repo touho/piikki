@@ -1,8 +1,9 @@
  #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import csv, datetime, random, string, math
+import datetime, math
 from .. import mysqlUtil, util
+from adminLogs import writeLogFiles
 
 requiredParameters = ["subAction"]
 
@@ -26,6 +27,9 @@ def execute(fieldStorage):
 		return {"success": True}
 	elif subAction == "sendPaymentRequest":
 		ret = sendPaymentRequest()
+		return {"success": ret == "ok", "message": ret}
+	elif subAction == "clearHistory":
+		ret = clearHistory()
 		return {"success": ret == "ok", "message": ret}
 	else:
 		return "unknown subAction " + str(subAction)
@@ -85,18 +89,7 @@ def sendPaymentRequest():
 
 	sendEmail()
 	
-	return "ok"
-
-def writeLogFile(mysqlData, name, datestring):
-	randomString = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(6))
-	filename = "logs/" + datestring + "_" + name + "_" + randomString + ".csv"
-	with open(filename, 'wb') as csvfile:
-		writer = csv.writer(csvfile)
-		for row in mysqlData:
-			writer.writerow(row)
-
-def getLogDateString():
-	return datetime.datetime.today().strftime("%Y-%m-%d_%H-%M-%S")
+	return "fail"
 
 def sendEmail():
 	users = mysqlUtil.getAllUsers()
@@ -118,3 +111,11 @@ def sendEmail():
 
 
 		#TODO: sendEmailImpl(sender, email, header, message)
+
+def clearHistory():
+	writeLogFiles()
+	#TODO: Fetch balance for all users
+	mysqlUtil.resetPiikkauksetAndPayments()
+	#TODO: Add initial payment (balance)
+	return "fail"
+	return "ok"

@@ -79,10 +79,19 @@ function AdminUtil()
 				content.append("<br/><br/>");
 			}
 			addAdminAction("Send Payment Requests", "When you request payment", [
+				"TODO: everything...",
 				"An email will be sent to all users",
 				"Email will tell the current balance of the user", 
 				"Email will include the information how to pay"],
 				"Sending Payment Request. Are you sure?", {subAction: "sendPaymentRequest"}, "Payment request sent!", false);
+
+			addAdminAction("Clear history", "When you clear history", [
+				"TODO: balance copying...",
+				"Current data will be saved as a log .csv file",
+				"Piikkaus history will be cleared",
+				"Payment history will be cleared", 
+				"An initial payment will be added for all users, containing the current balance"],
+				"Clearing history data. Are you sure?", {subAction: "clearHistory"}, "History cleared!", false);
 
 			addAdminAction("Reset Database", "When you reset database", [
 				"Users are deleted", 
@@ -562,20 +571,37 @@ function AdminUtil()
 	this.buildLogsPage = function()
 	{
 		this.selectButton("logsbutton");
-		piikki.sendAjax("server.cgi", {action: "adminLogs"}, function(results) {
+		piikki.sendAjax("server.cgi", {action: "adminLogs", subAction: "get"}, function(results) {
 			content.empty();
 			if (results.success)
 			{
 				var filenames = results.filenames;
 				var folder = results.folder;
 				
-				var code = "TODO<br/><br/>";
+				var writeButton = $("<button/>").text("Write logs").click(function() {
+					piikki.sendAjax("server.cgi", {
+						action: "adminLogs",
+						subAction: "write"
+					}, function(results) {
+						if (results.success)
+						{
+							admin.buildLogsPage();
+							alert("Log files written!");
+						}
+						else
+							admin.debugLog("Error while writing logs: " + results.message);
+					});
+				});
+
+				var code = "<br/><br/><b>List of logs:</b><br/>";
 
 				for (var i = filenames.length - 1; i >= 0; i--) {
 					code += "<a href='" + folder + "/" + filenames[i] + "'>" + filenames[i] + "</a><br/>";
 				}
 
-				content.append(code);
+				content.append("You can write all data to log files. Nothing will get deleted.<br/>");
+				content.append("Since nothing is deleted, creating log files often will create much duplicate information.<br/>");
+				content.append(writeButton).append(code);
 			}
 			else
 				admin.debugLog("Unable to get logs.");
