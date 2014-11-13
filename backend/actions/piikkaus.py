@@ -54,16 +54,11 @@ insert into piikkaukset (userId, itemId, value, price, date, ip) VALUES(1, 1, 1,
 
 #Piikkaus without validation
 def piikkausImpl(userId, itemId, value, ip, con):
-	print 1
 	priceQuery = "(select price*"+str(value)+" from items where id="+str(itemId)+")"
-	print 2
 	sql = "insert into piikkaukset (userId, itemId, value, price, date, ip) VALUES("+str(userId)+", "+str(itemId)+", "+str(value)+", "+priceQuery+", NOW(), '"+str(ip)+"');"
-	print 3
 	cur = con.cursor()
 	ret = cur.execute(sql)
 	cur.close()
-
-	print 4
 
 	if ret > 0:
 		return "ok"

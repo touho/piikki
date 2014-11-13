@@ -6,7 +6,7 @@ from .. import mysqlUtil
 requiredParameters = []
 
 def execute(fieldStorage):
-	ret = mysqlUtil.getAllPiikkaukset()
+	ret = mysqlUtil.getAllPiikkaukset(1000)
 	if not ret == None:
 		return {"success": True, "piikkaukset": ret}
 	else:

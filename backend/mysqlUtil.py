@@ -105,7 +105,12 @@ def getAllUsers():
 def getAllItems():
 	return fetchWithSQLCommand("select * from items order by name;")
 
-def getAllPiikkaukset():
+def getAllPiikkaukset(limit=0):
+	if limit == 0:
+		limitStr = ";"
+	else:
+		limitStr = " limit " + str(limit) + ";"
+
 	return fetchWithSQLCommand("""select piikkaukset.userId as userId, 
 			piikkaukset.itemId as itemId, 
 			users.name as userName, 
@@ -115,11 +120,15 @@ def getAllPiikkaukset():
 			DATE_FORMAT(piikkaukset.date, '%Y-%m-%d %H:%i:%S') as date, 
 			piikkaukset.ip as ip
 			from piikkaukset left join users on piikkaukset.userId = users.id left join items on piikkaukset.itemId = items.id
-			order by piikkaukset.date;""")
+			order by piikkaukset.date""" + limitStr)
 
-def getAllPayments():
+def getAllPayments(limit=0):
+	if limit == 0:
+		limitStr = ";"
+	else:
+		limitStr = " limit " + str(limit) + ";"
 	return fetchWithSQLCommand("""select payments.userId as userId, users.name as userName, payments.value as value, DATE_FORMAT(payments.date, '%Y-%m-%d') as date
 			from payments left join users on payments.userId = users.id
-			order by payments.date;""")
+			order by payments.date""" + limitStr)
 
 

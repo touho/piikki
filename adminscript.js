@@ -454,6 +454,8 @@ function AdminUtil()
 			});
 			content.append("<br/>").append(addButton);
 			content.append("<br/>").append(inputArea);
+
+			sorttable.makeSortable(table.get(0));
 		});
 	}
 
@@ -476,7 +478,7 @@ function AdminUtil()
 			{
 				var piikkaukset = results.piikkaukset; //ordered list
 				var container = admin.createTableContainer();
-				var table = $("<table/>").css({"border": "1px solid black"});
+				var table = $("<table/>").css({"border": "1px solid black"}).addClass("sortable");
 				table.append($("<tr/>").append(
 					"<th>UserId</th>" +
 					"<th>ItemId</th>" +
@@ -508,6 +510,8 @@ function AdminUtil()
 				container.append(table);
 
 				content.empty().append(container);
+
+				sorttable.makeSortable(table.get(0));
 			}
 			else
 				admin.debugLog("Unable to get piikkaukset.");
@@ -547,6 +551,8 @@ function AdminUtil()
 				container.append(table);
 
 				content.empty().append(container);
+
+				sorttable.makeSortable(table.get(0));
 			}
 			else
 				admin.debugLog("Unable to get payments.");

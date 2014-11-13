@@ -162,7 +162,7 @@ function PiikkiUtil()
 			var code = "";
 
 			code += "<br/><input id='nameinput' type='text' onfocusout='piikki.clearAutocomplete();' onfocus='piikki.updateAutocomplete();' onkeyup='piikki.inputKeyUp(event);' onkeydown='piikki.inputKeyDown(event);' placeholder='Mikäs sun nimi olikaan?'/>";
-			code += "<input id='rememberme' type='checkbox'/> Muista mut";
+			code += "<input id='rememberMe' type='checkbox'/> Muista mut";
 			code += "<br/><div style='visibility:hidden' id='autocomplete'></div>";
 
 			//code += "<input id='rememberMe' type='checkbox' name='rememberMe' value='1'/> Muista mut täl selaimel";
