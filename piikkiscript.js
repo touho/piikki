@@ -98,9 +98,9 @@ function PiikkiUtil()
 				if (undoDiv)
 				{
 					if (value > 0)
-						undoDiv.innerHTML += piikki.getItemNameById(itemId) + " piikattu! <span id='undoButton' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Undo</span>";
+						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " piikattu! <span id='undoButton' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Undo</span>";
 					else
-						undoDiv.innerHTML += piikki.getItemNameById(itemId) + " undottu.";
+						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " undottu.";
 				}
 			}
 			else
@@ -179,7 +179,7 @@ function PiikkiUtil()
 
 			code += "<br/><input id='nameinput' type='text' onfocusout='piikki.clearAutocomplete();' onfocus='piikki.updateAutocomplete();' onkeyup='piikki.inputKeyUp(event);' onkeydown='piikki.inputKeyDown(event);' placeholder='Mikäs sun nimi olikaan?'/>";
 			code += "<input id='rememberMe' type='checkbox'/> Muista mut";
-			code += "<br/><div style='visibility:hidden' id='autocomplete'></div>";
+			code += "<br/><div onmousedown='piikki.autoCompleteMouseDown();' style='visibility:hidden' id='autocomplete'></div>";
 
 			//code += "<input id='rememberMe' type='checkbox' name='rememberMe' value='1'/> Muista mut täl selaimel";
 
@@ -272,17 +272,35 @@ function PiikkiUtil()
 			auto.style.display = "block";
 		}
 	}
+
+	var ignoreNextFocusout = false;
+	var hideTimeout = null; //TODO
 	this.clearAutocomplete = function()
 	{
+		if (ignoreNextFocusout) {
+			ignoreNextFocusout = false;
+			return;
+		}
+
 		autocompleteUsers.length = 0;
-		setTimeout(function() {
+		hideTimeout = setTimeout(function() {
+			hideTimeout = null;
 			var auto = document.getElementById("autocomplete");
 			if (auto)
 			{
+
 				auto.style.visibility = "collapse";
 				auto.style.display = "none";
 			}
-		}, 100);
+		}, 200);
+	}
+
+	this.autoCompleteMouseDown = function()
+	{
+		if (document.activeElement.tagName.toLowerCase() == "input")
+		{
+			ignoreNextFocusout = true;
+		}
 	}
 
 	//private:
