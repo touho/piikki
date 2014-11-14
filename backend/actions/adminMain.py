@@ -4,6 +4,7 @@
 import datetime, math
 from .. import mysqlUtil, util
 from adminLogs import writeLogFiles
+from adminUsers import reportPaymentImpl
 
 requiredParameters = ["subAction"]
 
@@ -112,10 +113,40 @@ def sendEmail():
 
 		#TODO: sendEmailImpl(sender, email, header, message)
 
+def getPaymentDateString():
+	return datetime.datetime.today().strftime("%Y-%m-%d")
+
 def clearHistory():
+
+	#Write logs:
+
 	writeLogFiles()
-	#TODO: Fetch balance for all users
+	sql = """
+select id,
+(ROUND(IFNULL(SUM(payments.value),0),2)-piikkaukset) as balance
+from
+(select id, name, email, isAdmin, ROUND(IFNULL(SUM(piikkaukset.price),0),2) as piikkaukset
+from users
+left join piikkaukset on users.id = piikkaukset.userId
+group by users.id) as subTable
+left join payments on subTable.id = payments.userId
+group by subTable.id;
+	"""
+
+	#Fetch Balance:
+
+	userData = mysqlUtil.fetchWithSQLCommand(sql);
+
+	#Reset:
 	mysqlUtil.resetPiikkauksetAndPayments()
-	#TODO: Add initial payment (balance)
-	return "fail"
+
+
+	#Add balance:
+
+	for user in userData:
+		id = int(user[0])
+		balance = float(user[1])
+		if balance != 0:
+			reportPaymentImpl(id, balance, getPaymentDateString())
+
 	return "ok"

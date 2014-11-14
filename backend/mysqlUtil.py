@@ -100,10 +100,10 @@ def isValidItemId(itemId, con):
 
 
 def getAllUsers():
-	return fetchWithSQLCommand("select * from users order by name;")
+	return fetchWithSQLCommand("select * from users;")
 
 def getAllItems():
-	return fetchWithSQLCommand("select * from items order by name;")
+	return fetchWithSQLCommand("select * from items;")
 
 def getAllPiikkaukset(limit=0):
 	if limit == 0:
