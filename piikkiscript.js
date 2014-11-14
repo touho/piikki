@@ -75,6 +75,10 @@ function PiikkiUtil()
 
 	this.piikkaus = function(itemId, value)
 	{
+		var undoDiv = document.getElementById("undoDiv");
+		if (undoDiv)
+			undoDiv.innerHTML = "";
+
 		var userId = this.currentUserId;
 		if (isNaN(userId) || userId < 0) return;
 		userId = ~~userId;
@@ -87,7 +91,18 @@ function PiikkiUtil()
 
 		piikki.sendAjax("server.cgi", {action: "piikkaus", userId: userId, itemId: itemId, value: value}, function(results) {
 			if (results.success)
+			{
 				piikki.debugLog("" + value + " kpl " + piikki.getItemNameById(itemId) + " piikattu tyypille " + piikki.getUserNameById(userId));
+
+				var undoDiv = document.getElementById("undoDiv");
+				if (undoDiv)
+				{
+					if (value > 0)
+						undoDiv.innerHTML += piikki.getItemNameById(itemId) + " piikattu! <span id='undoButton' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Undo</span>";
+					else
+						undoDiv.innerHTML += piikki.getItemNameById(itemId) + " undottu.";
+				}
+			}
 			else
 				piikki.debugLog("Piikkaus epäonnistui: " + results.message);
 		});
@@ -142,6 +157,7 @@ function PiikkiUtil()
 				createItem(piikki.items[i].id, piikki.items[i].name);
 
 			code += "</div>";
+			code += "<div id='undoDiv'></div>";
 
 			contentElement.innerHTML = code;
 		});
@@ -272,6 +288,7 @@ function PiikkiUtil()
 	//private:
 
 	var contentElement = document.getElementById("content");
+	var undoElement = document.getElementById("undo");
 	var headerElement = document.getElementById("header");
 	var loginElement = document.getElementById("login");
 

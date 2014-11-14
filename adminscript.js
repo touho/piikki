@@ -86,7 +86,6 @@ function AdminUtil()
 				"Sending Payment Request. Are you sure?", {subAction: "sendPaymentRequest"}, "Payment request sent!", false);
 
 			addAdminAction("Clear history", "When you clear history", [
-				"TODO: balance copying...",
 				"Current data will be saved as a log .csv file",
 				"Piikkaus history will be cleared",
 				"Payment history will be cleared", 
@@ -167,6 +166,7 @@ function AdminUtil()
 				if (isUsers)
 				{
 					var email = $("<td/>").text(thingArray[2]);
+					if (!admin.validateEmail(email.text())) email.addClass("invalidEmail");
 					var isAdmin = $("<td/>").text(thingArray[3] == "1" ? "Yes" : "No");
 					var payments = $("<td/>").text(thingArray[4].toFixed(2)).attr("title", 
 						"Piikkaukset is total value how much user's piikkaukset have cost.");
@@ -615,6 +615,18 @@ function AdminUtil()
 				"overflow": "scroll",
 				"overflow-y": "scroll"
 			});
+	}
+
+	this.validateEmail = function(email) {
+		var atIndex = email.indexOf("@");
+		var dotIndex = email.lastIndexOf(".");
+
+		if (atIndex < 1 || dotIndex < 3) return false;
+
+		if (dotIndex <= atIndex + 1) return false;
+		if (dotIndex + 2 > email.length) return false;
+
+		return true;
 	}
 
 	//private:

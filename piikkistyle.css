@@ -64,3 +64,15 @@ h1 {
 #autocomplete div.selected {
 	background: #ddffff;
 }
+
+#undoDiv {
+
+}
+
+#undoButton {
+	border: 1px solid black;
+	cursor: pointer;
+}
+#undoButton:hover {
+	background: #ddd;
+}

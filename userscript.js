@@ -47,10 +47,10 @@ function UserUtil()
 					table.append(tr);
 				}
 
-				function addLine(time, text) {
+				function addLine(time, text, title) {
 					var rowDiv = $("<div/>");
 					var dateSpan = $("<span/>").text(time).addClass("dateSpan");
-					var textSpan = $("<span/>").text(text).addClass("textSpan");
+					var textSpan = $("<span/>").text(text).addClass("textSpan").attr("title", title);
 					rowDiv.append(dateSpan).append(textSpan);
 					div.append(rowDiv);
 				}
@@ -85,8 +85,9 @@ function UserUtil()
 					var name = piikkausInfo[i][1];
 					var value = parseInt(piikkausInfo[i][2]);
 					var date = "[" + piikkausInfo[i][3] + "] ";
+					var ip = "IP: " + piikkausInfo[i][4];
 
-					addLine(date, name + (value == 1 ? "" : " x " + value));
+					addLine(date, name + (value == 1 ? "" : " x " + value), ip);
 				};
 				content.append(div);
 

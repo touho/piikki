@@ -25,7 +25,7 @@ group by subTable.id;
 		userInformation = mysqlUtil.fetchWithSQLCommand(sql);
 
 		sql = """
-select id, name, value, DATE_FORMAT(date, '%a %d.%m.%Y %H:%i:%S') as formattedDate
+select id, name, value, DATE_FORMAT(date, '%a %d.%m.%Y %H:%i:%S') as formattedDate, ip
 from piikkaukset
 left join items on items.id = itemId
 where userId = """+ str(userId) + """

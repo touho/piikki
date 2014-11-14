@@ -44,3 +44,8 @@ th {
 .disabledItem td:nth-child(4) {
 	font-weight: bold;
 }
+
+.invalidEmail {
+	color: red;
+	font-weight: bold;
+}
