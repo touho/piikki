@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import validationUtil
+import validationUtil, config
 
 from actions import (piikkaus, getUsers, getItems, createTables, userPage,
 	adminMain, adminUsers, adminItems, adminPiikkaukset, adminPayments, adminLogs)
@@ -21,6 +21,10 @@ modules = {
 }
 
 def executeAction(fieldStorage, ip):
+	if "piikki_password" not in fieldStorage:
+		return authentication(fieldStorage)
+	if fieldStorage["piikki_password"].value != config.piikki_password:
+		return {"success": False, "message": "bad piikki password"}
 	if "action" not in fieldStorage:
 		return "action not given"
 
@@ -40,3 +44,9 @@ def executeActionImpl(module, fieldStorage):
 		return "Error! A parameter contained delimiter sign ';'"
 	else:
 		return module.execute(fieldStorage)
+
+def authentication(fieldStorage):
+	if "username" in fieldStorage and "password" in fieldStorage:
+		return {"success": True, "piikki_password": config.piikki_password}
+	else:
+		return {"success": False, "message": "bad username or password"}

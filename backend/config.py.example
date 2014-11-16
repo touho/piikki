@@ -1,4 +1,9 @@
+#MySQL Connection:
+
 db_host='localhost'
 db_user='piikki'
 db_pass=''
 db_database='piikki'
+
+#Long hard password, it doesn't need to be written anywhere
+piikki_password=''

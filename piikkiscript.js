@@ -22,6 +22,7 @@ function PiikkiUtil()
 
 	this.currentUserId = -1;
 	this.currentUserName = "";
+	this.piikki_password = "";
 
 	this.users = [];
 	this.items = [];
