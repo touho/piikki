@@ -12,7 +12,14 @@ function piikkiBegin()
 			return;
 		}
 	}
-	piikki.buildUserPage();
+
+	if (piikki.common_password.length > 0) {
+		piikki.buildUserPage();
+	}
+	else
+	{
+		piikki.buildAuthenticationPage();
+	}
 }
 
 var piikki;
@@ -22,7 +29,10 @@ function PiikkiUtil()
 
 	this.currentUserId = -1;
 	this.currentUserName = "";
-	this.piikki_password = "";
+	this.common_password = "";
+
+	if (window["localStorage"] && window.localStorage["piikkiCommonPassword"])
+		this.common_password = window.localStorage["piikkiCommonPassword"];
 
 	this.users = [];
 	this.items = [];
@@ -163,6 +173,51 @@ function PiikkiUtil()
 			contentElement.innerHTML = code;
 		});
 	}
+
+	this.doAuthentication = function()
+	{
+		var user = document.getElementById("usernameinput");
+		var pass = document.getElementById("passwordinput");
+
+		if (user && pass && user.value.length > 0 && pass.value.length > 0) {
+			piikki.sendAjax("server.cgi", {username: user.value, password: pass.value}, function(results) {
+				if (results.success)
+				{
+					piikki.common_password = results.common_password;
+					if (window["localStorage"]) localStorage["piikkiCommonPassword"] = piikki.common_password;
+					piikki.buildUserPage();
+				}
+				else
+					piikki.debugLog("Unable to get password.");
+			});
+		}
+	}
+	this.authUsernameKeyPress = function(e)
+	{
+		var k = e.keyCode;
+		if (k == 13) {
+			var pass = document.getElementById("passwordinput");
+			if (pass) pass.focus();
+		}
+	}
+	this.authPasswordKeyPress = function(e)
+	{
+		var k = e.keyCode;
+		if (k == 13) {
+			var pass = document.getElementById("authbutton");
+			if (pass) pass.focus();
+		}
+	}
+	this.buildAuthenticationPage = function()
+	{
+		var code = "";
+		code += "<input id='usernameinput' onkeydown='piikki.authUsernameKeyPress(event);' type='text' placeholder='Koko nimesi?'/><br/>";
+		code += "<input id='passwordinput' onkeydown='piikki.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
+		code += "<button onclick='piikki.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
+
+		contentElement.innerHTML = code;
+	}
+
 	this.buildUserPage = function()
 	{
 		this.currentUserId = -1;
@@ -333,7 +388,7 @@ function PiikkiUtil()
 					catch (e)
 					{
 						function safe_tags(str) {
-						    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') ;
+						    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 						}
 						piikki.debugLog(safe_tags(xmlhttp.responseText));
 					}
@@ -349,6 +404,7 @@ function PiikkiUtil()
 		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=utf-8");
 
 		var msg = "";
+		if (piikki.common_password.length > 0) parameters["common_password"] = piikki.common_password;
 		var keys = Object.keys(parameters);
 		for (var i = 0; i < keys.length; i++) {
 			if (i != 0) msg += "&";

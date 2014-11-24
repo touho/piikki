@@ -21,10 +21,10 @@ modules = {
 }
 
 def executeAction(fieldStorage, ip):
-	if "piikki_password" not in fieldStorage:
+	if "common_password" not in fieldStorage:
 		return authentication(fieldStorage)
-	if fieldStorage["piikki_password"].value != config.piikki_password:
-		return {"success": False, "message": "bad piikki password"}
+	if fieldStorage["common_password"].value != config.common_password:
+		return {"success": False, "message": "bad common password"}
 	if "action" not in fieldStorage:
 		return "action not given"
 
@@ -47,6 +47,6 @@ def executeActionImpl(module, fieldStorage):
 
 def authentication(fieldStorage):
 	if "username" in fieldStorage and "password" in fieldStorage:
-		return {"success": True, "piikki_password": config.piikki_password}
+		return {"success": True, "common_password": config.common_password}
 	else:
 		return {"success": False, "message": "bad username or password"}
