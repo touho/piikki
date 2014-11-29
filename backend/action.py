@@ -1,16 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import validationUtil, config
+import validationUtil, config, mysqlUtil
 
-from actions import (piikkaus, getUsers, getItems, createTables, userPage,
+from actions import (piikkaus, getUsers, getItems, userPage,
 	adminMain, adminUsers, adminItems, adminPiikkaukset, adminPayments, adminLogs)
 
 modules = {
 	"piikkaus": piikkaus,
 	"getUsers": getUsers,
 	"getItems": getItems,
-	"createTables": createTables,
 	"userPage": userPage,
 	"adminMain": adminMain,
 	"adminUsers": adminUsers,
@@ -21,7 +20,7 @@ modules = {
 }
 
 def executeAction(fieldStorage, ip):
-	if "common_password" not in fieldStorage:
+	if "common_password" not in fieldStorage or ("userId" in fieldStorage and "newPassword" in fieldStorage):
 		return authentication(fieldStorage)
 	if fieldStorage["common_password"].value != config.common_password:
 		return {"success": False, "message": "bad common password"}
@@ -47,6 +46,11 @@ def executeActionImpl(module, fieldStorage):
 
 def authentication(fieldStorage):
 	if "username" in fieldStorage and "password" in fieldStorage:
-		return {"success": True, "common_password": config.common_password}
-	else:
-		return {"success": False, "message": "bad username or password"}
+		if mysqlUtil.isValidUsernameAndPassword(fieldStorage["username"].value, fieldStorage["password"].value):
+			return {"success": True, "common_password": config.common_password}
+
+	elif "userId" in fieldStorage and "oldPassword" in fieldStorage and "newPassword" in fieldStorage:
+		if mysqlUtil.changePassword(fieldStorage):
+			return {"success": True, "common_password": config.common_password}
+
+	return {"success": False, "message": "Bad authentication"}

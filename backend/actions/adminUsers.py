@@ -1,20 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .. import mysqlUtil, validationUtil
+from .. import mysqlUtil, validationUtil, config
 from datetime import datetime
 from passlib.hash import pbkdf2_sha256
 import random, string
+import adminMain
 
 requiredParameters = ["subAction"]
 
 def execute(fieldStorage):
+	if not adminMain.authenticateAdmin(fieldStorage):
+		return {"success": False, "message": "Bad admin username or password"}
 	subAction = fieldStorage["subAction"].value
 
 	if subAction == "get":
 		return get()
 	elif subAction == "add":
-		ret = add(fieldStorage)
+		return add(fieldStorage)
 		return {"success": ret == "ok", "message": ret}
 	elif subAction == "edit":
 		ret = edit(fieldStorage)
@@ -65,14 +68,22 @@ def add(fieldStorage):
 	email = fieldStorage["email"].value
 	isAdmin = int(fieldStorage["isAdmin"].value)
 
-	password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
+	sql = "select * from users where name='"+name+"';"
+	if mysqlUtil.commitSQLCommand(sql) > 0:
+		return {"success": False, "message": "User already exists"}
+
+	password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
 	passwordHash = pbkdf2_sha256.encrypt(password);
 
 	sql = "insert into users (name, email, isAdmin, password) VALUES('"+name+"', '"+email+"', "+str(isAdmin)+", '"+passwordHash+"');"
 	if mysqlUtil.commitSQLCommand(sql) > 0:
-		#TODO: Send password as mail
-		return "ok"
-	return "fail"
+		#Send password as mail
+		sql = "select id from users where name='"+name+"';"
+		userId = mysqlUtil.fetchWithSQLCommand(sql)[0][0]
+		sendPasswordLinkByEmail(userId, password, True)
+
+		return {"success": True, "message": "ok", "userId": userId}
+	return {"success": False, "message": "failed to insert user to database"}
 
 def edit(fieldStorage):
 	requredParams = ["name", "email", "id", "isAdmin"]
@@ -111,12 +122,12 @@ def resetPassword(fieldStorage):
 
 	id = int(fieldStorage["id"].value)
 
-	password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
+	password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
 	passwordHash = pbkdf2_sha256.encrypt(password);
 
 	sql = "update users set password='"+passwordHash+"' where id = " + str(id) + ";"
 	if mysqlUtil.commitSQLCommand(sql) > 0:
-		#TODO: Send password as email
+		sendPasswordLinkByEmail(id, password, False)
 		return "ok"
 	return "fail"
 
@@ -143,3 +154,32 @@ def reportPayment(fieldStorage):
 def reportPaymentImpl(id, value, date):
 	sql = "insert into payments (userId, value, date) VALUES("+str(id)+", "+str(value)+", '"+date+"');"
 	return mysqlUtil.commitSQLCommand(sql)
+
+def sendPasswordLinkByEmail(userId, password, newUser):
+	sql = "select name from users where id=" + str(userId) + ";"
+	username = mysqlUtil.fetchWithSQLCommand(sql)
+	if len(username) > 0:
+		username = str(username[0][0])
+
+	link = config.baseUrl + "?id=" + str(userId) + "&p=" + password
+
+   	# TODO: Send email
+   	message = "Error"
+   	if newUser:
+   		message = """Hei, """ + username + """!
+
+Sinulle on tehty tunnukset piikkisivulle. Aktivoi tunnuksesi syöttämällä salasana osoiteessa:
+""" + link + """
+
+Terveisin: Piikki        Mestari"""
+   	else:
+   		message = """Hei, """ + username + """!
+
+Salasanasi piikkisivulla on resetoitu. Syötä uusi salasana osoiteessa:
+""" + link + """
+
+Terveisin: Piikki        Mestari"""
+
+   	# DEBUG: write it to a file
+	with open("logs/emailDebug.txt", "w") as myfile:
+   		myfile.write(message)

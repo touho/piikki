@@ -3,11 +3,15 @@
 
 from .. import mysqlUtil, util
 
-requiredParameters = ["subAction", "userId"]
+requiredParameters = ["subAction", "userId", "password"]
 
 def execute(fieldStorage):
 	subAction = fieldStorage["subAction"].value
+	password = fieldStorage["password"].value
 	userId = int(fieldStorage["userId"].value)
+
+	if not mysqlUtil.isValidUserIdAndPassword(userId, password):
+		return {"success": False}
 
 	if subAction == "get":
 		sql = """

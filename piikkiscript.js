@@ -2,7 +2,13 @@ function piikkiBegin()
 {
 	piikki = new PiikkiUtil();
 
-	if (window["localStorage"]) {
+	if (piikki.isChangePasswordUrl())
+	{
+		piikki.buildChangePasswordPage();
+		return;
+	}
+	else if (window["localStorage"])
+	{
 		var userId = parseInt(localStorage["piikkiUserId"]);
 		if (!isNaN(userId) && userId >= 0)
 		{
@@ -12,7 +18,7 @@ function piikkiBegin()
 			return;
 		}
 	}
-
+	
 	if (piikki.common_password.length > 0) {
 		piikki.buildUserPage();
 	}
@@ -188,7 +194,7 @@ function PiikkiUtil()
 					piikki.buildUserPage();
 				}
 				else
-					piikki.debugLog("Unable to get password.");
+					piikki.debugLog("Unable to authenticate.");
 			});
 		}
 	}
@@ -357,6 +363,71 @@ function PiikkiUtil()
 		{
 			ignoreNextFocusout = true;
 		}
+	}
+
+	this.changePasswordSend = function()
+	{
+		var newPassword = document.getElementById("newpasswordinput").value;
+		var newPassword2 = document.getElementById("newpasswordinput2").value;
+		if (newPassword != newPassword2)
+		{
+			alert("Salasanan syöttö uudelleen epäonnistui.");
+			return;
+		}
+		piikki.sendAjax("server.cgi", {userId: changePasswordUserId, oldPassword: changePasswordPassword, newPassword: newPassword}, function(results) {
+			if (results.success)
+			{
+				piikki.common_password = results.common_password;
+				if (window["localStorage"]) localStorage["piikkiCommonPassword"] = piikki.common_password;
+				//piikki.buildUserPage();
+				alert("Salasanan vaihto onnistui!");
+				window.location = "./index.html"; //This removes get parameters
+			}
+			else
+			{
+				alert("Salasanan vaihto epäonnistui. Oletko jo vaihtanut salasanan?");
+				piikki.debugLog("Failed to change password");
+			}
+		});
+	}
+
+	this.changePasswordSecondPasswordKeyPress = function(e)
+	{
+		var k = e.keyCode;
+		if (k == 13) {
+			piikki.changePasswordSend();
+		}
+	}
+	this.buildChangePasswordPage = function()
+	{
+		var code = "";
+		code += "<input id='newpasswordinput' type='password' placeholder='uusi salasana'/><br/>";
+		code += "<input id='newpasswordinput2' onkeydown='piikki.changePasswordSecondPasswordKeyPress(event);' type='password' placeholder='uusi salasana uudelleen'/><br/>";
+		code += "<button onclick='piikki.changePasswordSend();' id='changePasswordSendButton'>Tallenna</button>";
+
+		contentElement.innerHTML = code;
+
+		document.getElementById("newpasswordinput").focus();
+	}
+
+	var changePasswordUserId = -1;
+	var changePasswordPassword = "";
+	this.isChangePasswordUrl = function()
+	{
+		try
+		{
+			var params = window.location.search.substr(1);
+			var idIndex = params.indexOf("id=") + 3;
+			var passwordIndex = params.indexOf("p=") + 2;
+
+			changePasswordUserId = parseInt(params.substr(idIndex, passwordIndex-2));
+			changePasswordPassword = params.substr(passwordIndex);
+			return !isNaN(changePasswordUserId) && changePasswordPassword.length > 0;
+		}
+		catch(e)
+		{
+		}
+		return false;
 	}
 
 	//private:

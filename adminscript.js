@@ -10,9 +10,52 @@ function AdminUtil()
 {
 	//public:
 
+	var adminUsername = "";
+	var adminPassword = "";
+
 	this.init = function()
 	{
-		navigation.find("span").eq(0).click();
+		if (piikki.common_password.length > 0)
+			navigation.find("span").eq(0).click();
+		else
+			window.location = "./index.html";
+	}
+
+	this.doAuthentication = function()
+	{
+		var user = document.getElementById("usernameinput");
+		var pass = document.getElementById("passwordinput");
+
+		if (user && pass && user.value.length > 0 && pass.value.length > 0) {
+			adminUsername = user.value;
+			adminPassword = pass.value;
+			navigation.find("span").eq(0).click();
+		}
+	}
+	this.authUsernameKeyPress = function(e)
+	{
+		var k = e.keyCode;
+		if (k == 13) {
+			var pass = document.getElementById("passwordinput");
+			if (pass) pass.focus();
+		}
+	}
+	this.authPasswordKeyPress = function(e)
+	{
+		var k = e.keyCode;
+		if (k == 13) {
+			admin.doAuthentication();
+		}
+	}
+	this.buildAuthenticationPage = function()
+	{
+		var code = "";
+		code += "<input id='usernameinput' onkeydown='admin.authUsernameKeyPress(event);' type='text' placeholder='Koko nimesi?'/><br/>";
+		code += "<input id='passwordinput' onkeydown='admin.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
+		code += "<button onclick='admin.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
+
+		content.html(code);
+		document.getElementById("usernameinput").focus();
 	}
 
 	this.debugLog = function(message) {
@@ -27,15 +70,27 @@ function AdminUtil()
 		$("#"+id).css("background", "#ffffbb");
 	}
 
+	//Not in gui. Use from commandline
+	this.resetDatabase = function() {
+		if (!confirm("Are you sure you want to reset whole database?")) return;
+		admin.sendAjax("server.cgi", {"action": "adminMain", "subAction": "reset"}, function(results) {
+			if (results.success)
+				alert(doneText);
+			else
+				alert("Error! " + doneText + " And it failed!")
+			admin.buildMainPage();
+		});
+	}
+
 	this.buildMainPage = function()
 	{
 		this.selectButton("mainbutton");
-		piikki.sendAjax("server.cgi", {action: "adminMain", subAction: "get"}, function(results) {
+		admin.sendAjax("server.cgi", {action: "adminMain", subAction: "get"}, function(results) {
+			if (!results.success) {
+				admin.buildAuthenticationPage();
+				return;
+			}
 			var code = "Database has " + results.numUsers + " users and " + results.numItems + " items.<br/>";
-			if (results.lastCheckpoint)
-				code += "Previous checkpoint: " + results.lastCheckpoint;
-			else
-				code += "There hasn't been any checkpoints yet.";
 			code += "<br/><br/>";
 			code += "Admin commands:";
 			content.html(code);
@@ -46,7 +101,7 @@ function AdminUtil()
 					if (confirmationText.length == 0 || confirm(confirmationText))
 					{
 						actionParams["action"] = "adminMain";
-						piikki.sendAjax("server.cgi", actionParams, function(results) {
+						admin.sendAjax("server.cgi", actionParams, function(results) {
 							if (results.success)
 								alert(doneText);
 							else
@@ -90,8 +145,9 @@ function AdminUtil()
 				"Piikkaus history will be cleared",
 				"Payment history will be cleared", 
 				"An initial payment will be added for all users, containing the current balance"],
-				"Clearing history data. Are you sure?", {subAction: "clearHistory"}, "History cleared!", false);
+				"Clearing history data. Are you sure?", {subAction: "clearHistory"}, "History cleared!", true);
 
+			/*
 			addAdminAction("Reset Database", "When you reset database", [
 				"Users are deleted", 
 				"Items are deleted",
@@ -99,37 +155,25 @@ function AdminUtil()
 				"Payments are deleted",
 				"Logs will not be deleted"],
 				"Are you sure to delete EVERYTHING?", {subAction: "reset"}, "Database reseted!", true);
-
-			content.append("<hr/>");
-/*
-			var resetButton = $("<button/>").text("Reset database").click(function(){
-				if (confirm("Are you sure you want to reset EVERYTHING?"))
-				{
-					piikki.sendAjax("server.cgi", {action: "adminMain", subAction: "reset"}, function(results) {
-						admin.buildMainPage();
-					});
-				}
-			});
-			var checkpointButton = $("<button/>").text("Announce Checkpoint!").click(function(){
-				if (confirm("Announcing Checkpoint. Are you sure?"))
-				{
-					piikki.sendAjax("server.cgi", {action: "adminMain", subAction: "checkpoint"}, function(results) {
-						admin.buildMainPage();
-					});
-				}
-			});
-
-
-			content.append("<hr/><b>Checkpoint:</b><br/><br/>");
-			content.append("When you announce checkpoint:<br/>" + 
-				"- all necessary data will be dumped in to log files<br/>" + 
-				"- piikkaukset will be reseted<br/><br/>");
-			content.append(checkpointButton);
-			content.append("<hr/>");
-
-			content.append(resetButton);
 			*/
+
+			content.append("<hr/>");
 		});
+	}
+
+	this.getCurrentDateString = function()
+	{
+		var today = new Date();
+		var dd = today.getDate();
+		if(dd<10) {
+			dd='0'+dd;
+		} 
+		var mm = today.getMonth()+1; //January is 0!
+		if(mm<10) {
+			mm='0'+mm;
+		} 
+		var yyyy = today.getFullYear();
+		return "" + yyyy + "-" + mm + "-" + dd;
 	}
 
 	this.buildUsersOrItems = function(isUsers, buttonId, action, smallCaseName, bigCaseName)
@@ -143,10 +187,9 @@ function AdminUtil()
 		var rebuildCommand = function(){ if (isUsers) admin.buildUsersPage(); else admin.buildItemsPage();};
 
 		this.selectButton(buttonId);
-		piikki.sendAjax("server.cgi", {action: action, subAction: "get"}, function(results) {
-			if (!results.success)
-			{
-				admin.debugLog(results.message);
+		admin.sendAjax("server.cgi", {action: action, subAction: "get"}, function(results) {
+			if (!results.success) {
+				admin.buildAuthenticationPage();
 				return;
 			}
 
@@ -167,9 +210,9 @@ function AdminUtil()
 				{
 					var email = $("<td/>").text(thingArray[2]);
 					if (!admin.validateEmail(email.text())) email.addClass("invalidEmail");
-					var isAdmin = $("<td/>").text(thingArray[3] == "1" ? "Yes" : "No");
+					var isAdmin = $("<td/>").text(thingArray[3] == "1" ? "Yes" : "No").attr("title", "Is admin");
 					var payments = $("<td/>").text(thingArray[4].toFixed(2)).attr("title", 
-						"Piikkaukset is total value how much user's piikkaukset have cost.");
+						"Payments is the sum of all payments that admin has reported.");
 					var piikkaukset = $("<td/>").text(thingArray[5].toFixed(2)).attr("title", 
 						"Piikkaukset is total value how much user has piikked.");
 					var balance = $("<td/>").text(thingArray[6].toFixed(2)).attr("title", 
@@ -204,7 +247,7 @@ function AdminUtil()
 
 
 					var submitButton = $("<button/>").text("Submit changes!").click(function(){
-						piikki.sendAjax("server.cgi", {
+						admin.sendAjax("server.cgi", {
 							action: action,
 							subAction: "edit",
 							id: parseInt(id.text()),
@@ -242,19 +285,7 @@ function AdminUtil()
 				{
 					var paymentButton = $("<button/>").text("Report Payment").click(function() {
 						var valueInput = $("<input/>").attr("type", "text").val("0.0");
-
-
-						var today = new Date();
-						var dd = today.getDate();
-						if(dd<10) {
-							dd='0'+dd;
-						} 
-						var mm = today.getMonth()+1; //January is 0!
-						if(mm<10) {
-							mm='0'+mm;
-						} 
-						var yyyy = today.getFullYear();
-						var dateInput = $("<input/>").attr("type", "text").val("" + yyyy + "-" + mm + "-" + dd);
+						var dateInput = $("<input/>").attr("type", "text").val(admin.getCurrentDateString());
 
 						var submitButton = $("<button/>").text("Report Payment!").click(function(){
 							//Value validation:
@@ -280,7 +311,7 @@ function AdminUtil()
 								return;
 							}
 
-							piikki.sendAjax("server.cgi", {
+							admin.sendAjax("server.cgi", {
 								action: action,
 								subAction: "reportPayment",
 								id: parseInt(id.text()),
@@ -302,7 +333,7 @@ function AdminUtil()
 
 					var resetPasswordButton = $("<button/>").text("Reset Password").click(function() {
 						if (!confirm("Are you sure you want to reset user's password and set it by email?")) return;
-						piikki.sendAjax("server.cgi", {
+						admin.sendAjax("server.cgi", {
 							action: action,
 							subAction: "resetPassword",
 							id: parseInt(id.text())
@@ -325,7 +356,7 @@ function AdminUtil()
 
 						if (confirm(confirmation))
 						{
-							piikki.sendAjax("server.cgi", {
+							admin.sendAjax("server.cgi", {
 								action: action,
 								subAction: "remove",
 								id: parseInt(id.text())
@@ -425,9 +456,11 @@ function AdminUtil()
 				var priceInput = $("<input/>").attr("type", "text");
 				var visibleInput = $("<input/>").attr("type", "checkbox").attr("checked", "checked");
 				var isAdminInput = $("<input/>").attr("type", "checkbox");
-				if (things.length == 0) isAdminInput.attr("checked", "checked");
+				if (things.length == 0) {
+					isAdminInput.attr({"checked": "checked", "disabled": true});
+				}
 				var addButton2 = $("<button/>").text("Add!").click(function(){
-					piikki.sendAjax("server.cgi", {
+					admin.sendAjax("server.cgi", {
 						action: action,
 						subAction: "add",
 						name: nameInput.val(),
@@ -437,7 +470,12 @@ function AdminUtil()
 						price: parseFloat(priceInput.val())
 					}, function(addResults) {
 						if (addResults.success)
+						{
+							if (things.length == 0) {
+								alert("Admin user created. It must be activated from the link in email.");
+							}
 							rebuildCommand();
+						}
 						else
 							admin.debugLog("Error while inserting "+smallCaseName+": " + addResults.message);
 					});
@@ -458,11 +496,126 @@ function AdminUtil()
 
 				inputArea.append("<br/>");
 				inputArea.append(addButton2);
+				if (isUsers) inputArea.append("<font size=1>Password link will be sent by email.</font>");
 
 				nameInput.focus();
 			});
 			content.append("<br/>").append(addButton);
-			content.append("<br/>").append(inputArea);
+
+			if (isUsers) {
+				var loadButton = $("<input/>").attr({"type": "file", title: "Format: name;email;[balance];[isAdmin 1|0]"});
+				loadButton.change(function(e)
+				{
+					if (e && e.target && e.target.files && e.target.files.length >= 1) {
+						var fileReader = null;
+
+						try {
+							fileReader = new FileReader();
+						}
+						catch (e) {
+						}
+						if (fileReader != null)
+						{
+							fileReader.onload = function(e){
+								var errors = 0;
+								var waitCount = 0;
+								var addedUsers = 0;
+								var addedPayments = 0;
+
+								function addUser(name, email, balance, isAdmin)
+								{
+									waitCount++;
+									admin.sendAjax("server.cgi", {
+										action: action,
+										subAction: "add",
+										name: name,
+										email: email,
+										isAdmin: isAdmin,
+									}, function(addResults) {
+										waitCount--;
+										if (addResults.success)
+										{
+											addedUsers++;
+											if (balance != 0) {
+												waitCount++;
+												admin.sendAjax("server.cgi", {
+													action: action,
+													subAction: "reportPayment",
+													id: addResults.userId,
+													value: balance,
+													date: admin.getCurrentDateString(),
+												}, function(editResults) {
+													waitCount--;
+													if (editResults.success)
+														addedPayments++;
+													else
+														errors += 1;
+												});
+											}
+										}
+										else
+											errors += 1;
+									});
+								}
+
+								var lines = e.target.result.split("\n");
+								for (var i = 0; i < lines.length; i++) {
+									if (lines[i].length < 2) continue;
+
+									var lineData = lines[i].split(";");
+									if (lineData.length < 2) {
+										errors += 1;
+										continue;
+									}
+									var name = lineData[0];
+									var email = lineData[1];
+
+									if (name.length < 2 || email.length < 2) {
+										errors += 1;
+										continue;
+									}
+
+									var balance = lineData.length >= 3 ? parseFloat(lineData[2]) : 0;
+									if (isNaN(balance)) {
+										balance = 0;
+									}
+									var isAdmin = lineData.length >= 4 ? parseInt(lineData[3]) : 0;
+									if (isAdmin !== 1) {
+										isAdmin = 0;
+									}
+
+									addUser(name, email, balance, isAdmin);
+								}
+
+								var interval = setInterval(function(){
+									var progress = addedUsers
+									loadLabel.text("Adding users... " + addedUsers + " users and " + addedPayments + " payments. Operations in queue: " + waitCount );
+									if (waitCount > 0) return;
+									clearInterval(interval);
+
+									if (errors == 0)
+									{
+										alert("" + addedUsers + " users added successfully!");
+									}
+									else
+										alert("Import error! Users added: " + addedUsers + ". Errors occured: " + errors);
+
+									admin.buildUsersPage();
+								}, 100);
+							}
+							var file = e.target.files[0];
+							fileReader.readAsText(file);
+							loadButton.hide();
+							var loadLabel = $("<span/>").text("Adding users...");
+							loadButton.after(loadLabel);
+						}
+					}
+					setTimeout(function(){loadButton.val("");}, 5000);
+				});
+				content.append("<br/>Add users from csv file: ").append(loadButton);
+
+				content.append("<br/>").append(inputArea);
+			}
 
 			sorttable.makeSortable(table.get(0));
 		});
@@ -482,7 +635,11 @@ function AdminUtil()
 	{
 		this.selectButton("piikkauksetbutton");
 
-		piikki.sendAjax("server.cgi", {action: "adminPiikkaukset"}, function(results) {
+		admin.sendAjax("server.cgi", {action: "adminPiikkaukset"}, function(results) {
+			if (!results.success) {
+				admin.buildAuthenticationPage();
+				return;
+			}
 			if (results.success)
 			{
 				var piikkaukset = results.piikkaukset; //ordered list
@@ -531,7 +688,11 @@ function AdminUtil()
 	{
 		this.selectButton("paymentsbutton");
 
-		piikki.sendAjax("server.cgi", {action: "adminPayments"}, function(results) {
+		admin.sendAjax("server.cgi", {action: "adminPayments"}, function(results) {
+			if (!results.success) {
+				admin.buildAuthenticationPage();
+				return;
+			}
 			if (results.success)
 			{
 				var payments = results.payments; //ordered list
@@ -571,7 +732,11 @@ function AdminUtil()
 	this.buildLogsPage = function()
 	{
 		this.selectButton("logsbutton");
-		piikki.sendAjax("server.cgi", {action: "adminLogs", subAction: "get"}, function(results) {
+		admin.sendAjax("server.cgi", {action: "adminLogs", subAction: "get"}, function(results) {
+			if (!results.success) {
+				admin.buildAuthenticationPage();
+				return;
+			}
 			content.empty();
 			if (results.success)
 			{
@@ -579,7 +744,7 @@ function AdminUtil()
 				var folder = results.folder;
 				
 				var writeButton = $("<button/>").text("Write logs").click(function() {
-					piikki.sendAjax("server.cgi", {
+					admin.sendAjax("server.cgi", {
 						action: "adminLogs",
 						subAction: "write"
 					}, function(results) {
@@ -627,6 +792,12 @@ function AdminUtil()
 		if (dotIndex + 2 > email.length) return false;
 
 		return true;
+	}
+
+	this.sendAjax = function() {
+		arguments[1].adminUsername = adminUsername;
+		arguments[1].adminPassword = adminPassword;
+		piikki.sendAjax.apply(piikki, arguments);
 	}
 
 	//private:

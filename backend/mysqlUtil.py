@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from backend import config
+from passlib.hash import pbkdf2_sha256
 
 import MySQLdb
 
@@ -131,4 +132,55 @@ def getAllPayments(limit=0):
 			from payments left join users on payments.userId = users.id
 			order by payments.date""" + limitStr)
 
+def isValidUsernameAndPassword(username, password):
+	passwordHash = pbkdf2_sha256.encrypt(password);
+
+	sql = "select password from users where name = '" + str(username) + "';"
+	result = fetchWithSQLCommand(sql)
+
+	if len(result) > 0:
+		realPasswordHash = result[0][0]
+		if pbkdf2_sha256.verify(password, realPasswordHash):
+			return True #Correct password, let in
+
+	if len(getAllUsers()) == 0: #No users, let admin in
+		return True
+
+	return False #Don't let in!
+
+def isValidUserIdAndPassword(userId, password):
+	passwordHash = pbkdf2_sha256.encrypt(password);
+
+	sql = "select password from users where id = " + str(userId) + ";"
+	result = fetchWithSQLCommand(sql)
+
+	if len(result) > 0:
+		realPasswordHash = result[0][0]
+		if pbkdf2_sha256.verify(password, realPasswordHash):
+			return True #Correct password, let in
+
+	if len(getAllUsers()) == 0: #No users, let admin in
+		return True
+
+	return False #Don't let in!
+
+def changePassword(fieldStorage):
+	#fields already checked
+	userId = int(fieldStorage["userId"].value)
+
+	oldPassword = fieldStorage["oldPassword"].value
+	oldPasswordHash = pbkdf2_sha256.encrypt(oldPassword);
+
+	newPassword = fieldStorage["newPassword"].value
+	newPasswordHash = pbkdf2_sha256.encrypt(newPassword);
+
+	sql = "select password from users where id = " + str(userId) + ";"
+	result = fetchWithSQLCommand(sql)
+	if len(result) > 0:
+		realPasswordHash = result[0][0]
+		if pbkdf2_sha256.verify(oldPassword, realPasswordHash):
+			sql = "update users set password='"+newPasswordHash+"' where id = " + str(userId) + ";"
+			result = commitSQLCommand(sql);
+			return result > 0
+	return False
 

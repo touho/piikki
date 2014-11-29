@@ -5,10 +5,34 @@ import datetime, math
 from .. import mysqlUtil, util
 from adminLogs import writeLogFiles
 from adminUsers import reportPaymentImpl
+from passlib.hash import pbkdf2_sha256
 
 requiredParameters = ["subAction"]
 
+def authenticateAdmin(fieldStorage):
+	users = mysqlUtil.getAllUsers()
+	if len(users) == 0:
+		return True # No users in database. Accept connection!
+
+	if not "adminUsername" in fieldStorage or not "adminPassword" in fieldStorage:
+		return False
+	user = fieldStorage["adminUsername"].value
+	password = fieldStorage["adminPassword"].value
+	if len(user) < 1 or len(password) < 1:
+		return False
+
+	sql = "select password from users where name='" + user + "' and isAdmin=1;"
+	result = mysqlUtil.fetchWithSQLCommand(sql)
+	if len(result) > 0:
+		realPasswordHash = result[0][0]
+		if pbkdf2_sha256.verify(password, realPasswordHash):
+			return True
+
+	return False
+
 def execute(fieldStorage):
+	if not authenticateAdmin(fieldStorage):
+		return {"success": False, "message": "Bad admin username or password"}
 	subAction = fieldStorage["subAction"].value
 
 
@@ -21,7 +45,7 @@ def execute(fieldStorage):
 			userLen = len(users)
 		if items != None:
 			itemLen = len(items)
-		return {"numItems": itemLen, "numUsers": userLen, "lastCheckpoint": util.getLastCheckpointDate("%d.%m.%Y %H:%M:%S")}
+		return {"success": True, "numItems": itemLen, "numUsers": userLen}
 	elif subAction == "reset":
 		mysqlUtil.dropTables()
 		mysqlUtil.createTables()

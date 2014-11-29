@@ -6,4 +6,7 @@ db_pass=''
 db_database='piikki'
 
 #Long hard password, it doesn't need to be written anywhere
-piikki_password=''
+common_password=''
+
+#Url to base directory where index.html is. Example: www.url.fi/piikki/
+baseUrl=''

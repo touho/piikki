@@ -3,10 +3,13 @@
 
 import os, datetime, string, random, csv
 from .. import mysqlUtil
+import adminMain
 
 requiredParameters = ["subAction"]
 
 def execute(fieldStorage):
+	if not adminMain.authenticateAdmin(fieldStorage):
+		return {"success": False, "message": "Bad admin username or password"}
 	subAction = fieldStorage["subAction"].value
 
 	if subAction == "get":

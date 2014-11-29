@@ -2,26 +2,55 @@ function userBegin()
 {
 	piikki = new PiikkiUtil();
 	user = new UserUtil();
-	user.build();
+	user.buildAuthenticationPage();
 }
 
 var user;
 function UserUtil()
 {
-	this.build = function()
+	var userPassword = "";
+	var userId = 0;
+	var params = window.location.search.substr(1);
+	var i = params.indexOf("id=") + 3;
+	userId = parseInt(params.substr(i));
+
+
+	this.doAuthentication = function()
 	{
-		var userId = 0;
+		var pass = document.getElementById("passwordinput");
 
-		var params = window.location.search.substr(1);
+		if (pass && pass.value.length > 0) {
+			userPassword = pass.value;
+			user.buildInfo();
+		}
+	}
+	this.authPasswordKeyPress = function(e)
+	{
+		var k = e.keyCode;
+		if (k == 13) {
+			this.doAuthentication();
+		}
+	}
+	this.buildAuthenticationPage = function()
+	{
+		piikki.getUsers(function(){
+			var name = piikki.getUserNameById(userId);
+			var code = "";
+			code += name+"<br/>";
+			code += "<input id='passwordinput' onkeydown='piikki.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
+			code += "<button onclick='user.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
 
-		var i = params.indexOf("id=") + 3;
-		userId = parseInt(params.substr(i));
-
+			content.html(code);
+			document.getElementById("passwordinput").focus();
+		});
+	}
+	this.buildInfo = function()
+	{
 		if (isNaN(userId)) {
 			return;
 		}
 
-		piikki.sendAjax("server.cgi", {action: "userPage", subAction: "get", userId: userId}, function(results) {
+		piikki.sendAjax("server.cgi", {action: "userPage", subAction: "get", userId: userId, password: userPassword}, function(results) {
 			if (results.success)
 			{
 				var userInfo = results.userInformation;
@@ -68,6 +97,8 @@ function UserUtil()
 				if (isAdmin)
 					addRow("Admin:", "Kyllä!");
 				content.append(table);
+				if (isAdmin)
+					content.append("<a href='admin.html'>Hallinnoi</a><br/><br/>");
 
 
 				addBlock("Viimeisimmät maksusi:");
@@ -91,6 +122,40 @@ function UserUtil()
 				};
 				content.append(div);
 
+				addBlock("Vaihda salasanasi:");
+				var passwordInput = $("<input>").attr({type: "password", placeholder: "uusi salasana"});
+				var passwordInput2 = $("<input>").attr({type: "password", placeholder: "uusi salasana uudelleen"});
+				var passwordSendButton = $("<button/>").text("Vaihda").click(function(){
+					var newPassword = passwordInput.val();
+					var newPassword2 = passwordInput2.val();
+					if (newPassword.length <= 0) return;
+					if (newPassword != newPassword2) {
+						alert("Salasana uudelleenkirjoitettu väärin.");
+						return;
+					}
+
+					piikki.sendAjax("server.cgi", {userId: userId, oldPassword: userPassword, newPassword: newPassword}, function(results) {
+						if (results.success)
+						{
+							userPassword = newPassword;
+							alert("Salasanan vaihto onnistui!");
+							user.buildInfo();
+						}
+						else
+						{
+							alert("Salasanan vaihto epäonnistui.");
+							piikki.debugLog("Failed to change password");
+						}
+					});
+				});
+				div.append(passwordInput).append("<br/>").append(passwordInput2).append("<br/>").append(passwordSendButton);
+				content.append(div);
+
+			}
+			else
+			{
+				alert("Väärä salasana.");
+				document.getElementById("passwordinput").focus();
 			}
 		});
 	}
