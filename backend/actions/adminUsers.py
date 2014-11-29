@@ -70,7 +70,7 @@ def add(fieldStorage):
 
 	sql = "select * from users where name='"+name+"';"
 	if mysqlUtil.commitSQLCommand(sql) > 0:
-		return {"success": False, "message": "User already exists"}
+		return {"success": False, "message": "User already"}
 
 	password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
 	passwordHash = pbkdf2_sha256.encrypt(password);

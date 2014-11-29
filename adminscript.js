@@ -564,14 +564,17 @@ function AdminUtil()
 
 									var lineData = lines[i].split(";");
 									if (lineData.length < 2) {
-										errors += 1;
 										continue;
 									}
 									var name = lineData[0];
 									var email = lineData[1];
 
-									if (name.length < 2 || email.length < 2) {
-										errors += 1;
+									if (name.length < 2) {
+										continue;
+									}
+
+									if (email.length < 2) {
+										errors += 1; //name found but email missing
 										continue;
 									}
 
