@@ -504,6 +504,8 @@ function AdminUtil()
 
 			if (isUsers) {
 				var loadButton = $("<input/>").attr({"type": "file", title: "Format: name;email;[balance];[isAdmin 1|0]"});
+				if (things.length == 0)
+					loadButton.attr("disabled", true);
 				loadButton.change(function(e)
 				{
 					if (e && e.target && e.target.files && e.target.files.length >= 1) {
