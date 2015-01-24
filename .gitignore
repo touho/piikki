@@ -4,3 +4,5 @@ backend/config.py
 logs/*.csv
 
 logs/emailDebug.txt
+
+htmlDemo/*

@@ -18,7 +18,7 @@ function piikkiBegin()
 			return;
 		}
 	}
-	
+
 	if (piikki.common_password.length > 0) {
 		piikki.buildUserPage();
 	}
@@ -43,6 +43,12 @@ function PiikkiUtil()
 	this.users = [];
 	this.items = [];
 
+	this.resetLocalStorage = function()
+	{
+		delete localStorage["piikkiUserId"];
+		delete localStorage["piikkiCommonPassword"];
+	}
+
 	this.selectUser = function(id)
 	{
 		if (!isNaN(id) && id >= 0)
@@ -59,7 +65,7 @@ function PiikkiUtil()
 						localStorage["piikkiUserId"] = this.currentUserId;
 					}
 
-					headerElement.innerHTML = "Hei, " + this.currentUserName;
+					//headerElement.innerHTML = "Hei, " + this.currentUserName;
 
 					this.buildItemPage();
 
@@ -73,7 +79,8 @@ function PiikkiUtil()
 
 	this.debugLog = function(msg) {
 		var elem = document.getElementById("log");
-		elem.innerHTML = msg + "<br/>" + elem.innerHTML;
+		if (elem)
+			elem.innerHTML = msg + "<br/>" + elem.innerHTML;
 	}
 
 	this.getUserNameById = function(id) {
@@ -161,11 +168,34 @@ function PiikkiUtil()
 			return;
 		}
 
-		this.getItems(function(){
-			loginElement.innerHTML = "<a href='user.html?id="+piikki.currentUserId+"'>Login</a>";
-			var code = "<button onclick=\"piikki.buildUserPage()\">En oo minä</button><br/><br/>";
+		var code = "<div id=\"header\" class=\"header\">";
+		code += "<h1>Hei " + this.currentUserName + "!</h1>";
+		code += "</div>";
+		contentElement.innerHTML = code;
 
-			code += "<div id='piikkausbuttons'>";
+		this.getItems(function(){
+			//loginElement.innerHTML = "<a href='user.html?id="+piikki.currentUserId+"'>Login</a>";
+			var code = "<button onclick=\"piikki.buildUserPage()\">En oo minä</button><br/><br/>";
+			var code = "<div id=\"header\" class=\"header\">";
+			code += "<h1>Hei " + piikki.currentUserName + "!</h1>\n";
+			code += "<div id=\"notme\"><button class=\"non-button\" onclick=\"piikki.buildUserPage()\">Vaihda henkilöä</button></div>";
+			code += "<div id=\"login\" class=\"login\"><a href='user.html?id="+piikki.currentUserId+"'>Piikkaushistoria</a></div>";
+			code += "</div>";
+
+			//contentElement.innerHTML = code;
+/*
+<div class="header">
+		<h1 id="header">Hei Marko Rintamäki!</h1>
+		<div id="notme">
+			<button class="non-button" onclick="piikki.buildUserPage()">Vaihda henkilöä</button>
+		</div>
+		<div id="login" class="login"><a href="user.html?id=1">Piikkaushistoria</a></div>
+	</div>
+*/
+
+			code += "<div id='undoDiv'></div>";
+
+			code += "<div id='piikkausbuttons' class=\"justified-adjustment\">";
 			function createItem(id, name) {
 				code += "<div onclick=\"piikki.piikkaus('"+id+"',1)\" class='button'>"+name+"</div>";
 				//code += "<button onclick=\"piikki.piikkaus('"+id+"',1)\">" + name + "</button>";
@@ -174,7 +204,6 @@ function PiikkiUtil()
 				createItem(piikki.items[i].id, piikki.items[i].name);
 
 			code += "</div>";
-			code += "<div id='undoDiv'></div>";
 
 			contentElement.innerHTML = code;
 		});
@@ -228,13 +257,12 @@ function PiikkiUtil()
 	{
 		this.currentUserId = -1;
 		this.currentUserName = "";
-		loginElement.innerHTML = "";
 
 		if (window["localStorage"]) {
 			delete localStorage["piikkiUserId"];
 		}
 
-		headerElement.innerHTML = "Kuka sie oot?";
+		//headerElement.innerHTML = "Kuka sie oot?";
 
 		this.getUsers(function(){
 			var code = "";
@@ -328,7 +356,7 @@ function PiikkiUtil()
 					}
 				};
 			}
-			
+
 			auto.innerHTML = code;
 			if (visible != auto.style.visibility) auto.style.visibility = visible;
 			auto.style.display = "block";
@@ -433,9 +461,6 @@ function PiikkiUtil()
 	//private:
 
 	var contentElement = document.getElementById("content");
-	var undoElement = document.getElementById("undo");
-	var headerElement = document.getElementById("header");
-	var loginElement = document.getElementById("login");
 
 	//parameters: {action: "act", param: "par"}
 	this.sendAjax = function(url, parameters, callback)

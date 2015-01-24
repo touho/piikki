@@ -1,0 +1,233 @@
+* {
+  /*Box-sizing for all elements*/
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  /*Disabling selection. The below can be used for elements that should be enabled.
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text; */
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 100;
+	font-size: 20px;
+  margin: 0;
+}
+
+.content {
+	max-width: 1024px;
+	margin: 0 auto;
+  text-align: center;
+}
+
+a {
+  color: #243216;
+}
+
+a:hover {
+  color: #deaf91;
+}
+
+a:active {
+  color: #C59678;
+}
+
+a:focus {
+  outline: none;
+}
+
+.header {
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.header h1 {
+  color: #243216;
+  font-size: 40px;
+  display: inline;
+}
+
+.login {
+	display: inline;
+}
+
+#notme {
+  display: inline;
+}
+
+.non-button {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 100;
+  font-size: 20px;
+  text-decoration: underline;
+  color: #243216;
+  padding: 0 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.non-button:hover {
+  color: #deaf91;
+}
+
+.non-button:active {
+  color: #C59678;
+}
+
+.non-button:focus {
+  outline: none;
+}
+
+img.resize{
+  width: 70%;
+  height: auto;
+  margin: 20px auto 30px;
+}
+
+img.resizeLast{
+  width: 70%;
+  height: auto;
+  margin: 0 auto 30px;
+}
+
+#piikkausbuttons {
+  width: 100%;
+  overflow: auto;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.button {
+	position: relative;
+  display: inline-block;
+  color: #243216;
+  font-size: 40px;
+	border: 1px solid #243216;
+	border-radius: 3px;
+	padding: 15px 30px 15px 70px;
+  box-shadow: 1px 2px 2px #243216;
+  background: #FFFFFF;
+	cursor: pointer;
+  margin: 0 40px 40px 20px;
+  max-width: 400px;
+}
+
+.button:before {
+  display: block;
+  position: absolute;
+  content: '';
+  background: url(img/hop_bw2.gif);
+  background-size: 40px 55px;
+  background-repeat: no-repeat;
+  height: 55px;
+  width: 40px;
+  left: 20px;
+}
+
+.button:hover {
+  color: #deaf91;
+  outline: none;
+  border: 1px solid #deaf91;
+  box-shadow: 1px 2px 2px #deaf91;
+}
+
+.button:hover:before {
+  background: url(img/hop_orange2.gif);
+  background-size: 40px 55px;
+  background-repeat: no-repeat;
+}
+
+.button:active {
+  top: 1px;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.action-button {
+  border: 3px solid #243216;
+  background: #FFFFFF;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.action-button:focus {
+  outline: none;
+}
+
+input {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 20px;
+  padding: 10px;
+  background: #FFFFFF;
+  border: 3px solid #243216;
+  border-radius: 10px;
+}
+
+input:focus {
+  outline: none;
+}
+
+#nameinput {
+	height: 20px;
+	max-width: 400px;
+}
+
+#autocomplete {
+	position: absolute;
+	max-width: 300px;
+	background: #bbeeff;
+	border: 2px solid #99ccdd;
+	border-radius: 8px;
+	padding: 4px;
+}
+
+#autocomplete div {
+	cursor: pointer;
+	padding: 2px;
+	border-radius: 3px;
+}
+
+#autocomplete div.selected {
+	background: #ddffff;
+}
+
+#undoDiv {
+ background: #FFFFFF;
+ border-radius: 10px;
+ padding: 40px 40px 40px 40px;
+ margin-bottom: 45px;
+ opacity: 0.8;
+ filter: alpha(opacity=80); /* For IE8 and earlier */
+}
+
+/*Media queries*/
+@media screen and (max-width: 450px) {
+
+  body {
+    /* background-image: url("TBD.png"); Not found */
+    background-repeat: no-repeat;
+    background-size: 100%;
+  }
+
+  #login {
+    position: static;
+    margin-top: 20px;
+  }
+
+  #header {
+    padding: 40px 0px 20px 0px;
+  }
+}

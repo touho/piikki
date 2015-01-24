@@ -18,4 +18,4 @@ def execute(fieldStorage):
 		con.close()
 		return {"success": True, "users": ret}
 	else:
-		return {"success": False}
+		return {"success": False, "message": "Unable to create mysql connection."}

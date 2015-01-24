@@ -136,20 +136,20 @@ function AdminUtil()
 			addAdminAction("Send Payment Requests", "When you request payment", [
 				"TODO: everything...",
 				"An email will be sent to all users",
-				"Email will tell the current balance of the user", 
+				"Email will tell the current balance of the user",
 				"Email will include the information how to pay"],
 				"Sending Payment Request. Are you sure?", {subAction: "sendPaymentRequest"}, "Payment request sent!", false);
 
 			addAdminAction("Clear history", "When you clear history", [
 				"Current data will be saved as a log .csv file",
 				"Piikkaus history will be cleared",
-				"Payment history will be cleared", 
+				"Payment history will be cleared",
 				"An initial payment will be added for all users, containing the current balance"],
 				"Clearing history data. Are you sure?", {subAction: "clearHistory"}, "History cleared!", true);
 
 			/*
 			addAdminAction("Reset Database", "When you reset database", [
-				"Users are deleted", 
+				"Users are deleted",
 				"Items are deleted",
 				"Piikkaukset are deleted",
 				"Payments are deleted",
@@ -167,11 +167,11 @@ function AdminUtil()
 		var dd = today.getDate();
 		if(dd<10) {
 			dd='0'+dd;
-		} 
+		}
 		var mm = today.getMonth()+1; //January is 0!
 		if(mm<10) {
 			mm='0'+mm;
-		} 
+		}
 		var yyyy = today.getFullYear();
 		return "" + yyyy + "-" + mm + "-" + dd;
 	}
@@ -211,20 +211,20 @@ function AdminUtil()
 					var email = $("<td/>").text(thingArray[2]);
 					if (!admin.validateEmail(email.text())) email.addClass("invalidEmail");
 					var isAdmin = $("<td/>").text(thingArray[3] == "1" ? "Yes" : "No").attr("title", "Is admin");
-					var payments = $("<td/>").text(thingArray[4].toFixed(2)).attr("title", 
+					var payments = $("<td/>").text(thingArray[4].toFixed(2)).attr("title",
 						"Payments is the sum of all payments that admin has reported.");
-					var piikkaukset = $("<td/>").text(thingArray[5].toFixed(2)).attr("title", 
+					var piikkaukset = $("<td/>").text(thingArray[5].toFixed(2)).attr("title",
 						"Piikkaukset is total value how much user has piikked.");
-					var balance = $("<td/>").text(thingArray[6].toFixed(2)).attr("title", 
+					var balance = $("<td/>").text(thingArray[6].toFixed(2)).attr("title",
 						"Balance means how much user has money in piikki bank. Balance = Payments - Piikkaukset");
 				}
 				else
 				{
 					var price = $("<td/>").text(thingArray[2].toFixed(2));
 					var visible = $("<td/>").text(thingArray[3] == "1" ? "Yes" : "No");
-					piikkaukset = $("<td/>").text(parseInt(thingArray[4])).attr("title", 
+					piikkaukset = $("<td/>").text(parseInt(thingArray[4])).attr("title",
 						"Piikkaukset means how many time this item has been piikke'd.");
-					var earnings = $("<td/>").text(thingArray[5].toFixed(2)).attr("title", 
+					var earnings = $("<td/>").text(thingArray[5].toFixed(2)).attr("title",
 						"Earnings means how much piikkaukset have cost in total.");
 
 					if (visible.text() == "No") {
@@ -365,7 +365,7 @@ function AdminUtil()
 									rebuildCommand();
 								else
 									admin.debugLog("Error while editing "+smallCaseName+": " + removeResults.message);
-							});	
+							});
 						}
 					});
 				}
@@ -407,15 +407,15 @@ function AdminUtil()
 				"<th>Name</th>" + ( isUsers ?
 
 				("<th>Email</th>" +
-				"<th>Is Admin</th>" + 
-				"<th>Payments</th>" + 
+				"<th>Is Admin</th>" +
+				"<th>Payments</th>" +
 				"<th>Piikkausten Arvo</th>" +
 				"<th>Balance</th>"
-				) 
-				: 
-				("<th>Price</th>" + 
-				"<th>Visible</th>" + 
-				"<th>Piikkaukset</th>" + 
+				)
+				:
+				("<th>Price</th>" +
+				"<th>Visible</th>" +
+				"<th>Piikkaukset</th>" +
 				"<th>Earnings</th>")
 				) +
 				"<th></th>"
@@ -456,7 +456,7 @@ function AdminUtil()
 				var priceInput = $("<input/>").attr("type", "text");
 				var visibleInput = $("<input/>").attr("type", "checkbox").attr("checked", "checked");
 				var isAdminInput = $("<input/>").attr("type", "checkbox");
-				if (things.length == 0) {
+				if (isUsers && things.length == 0) {
 					isAdminInput.attr({"checked": "checked", "disabled": true});
 				}
 				var addButton2 = $("<button/>").text("Add!").click(function(){
@@ -471,7 +471,7 @@ function AdminUtil()
 					}, function(addResults) {
 						if (addResults.success)
 						{
-							if (things.length == 0) {
+							if (things.length == 0 && isUsers) {
 								alert("Admin user created. It must be activated from the link in email.");
 							}
 							rebuildCommand();
@@ -618,9 +618,9 @@ function AdminUtil()
 					setTimeout(function(){loadButton.val("");}, 5000);
 				});
 				content.append("<br/>Add users from csv file: ").append(loadButton);
-
-				content.append("<br/>").append(inputArea);
 			}
+
+			content.append("<br/>").append(inputArea);
 
 			sorttable.makeSortable(table.get(0));
 		});
@@ -657,7 +657,7 @@ function AdminUtil()
 					"<th>ItemName</th>" +
 					"<th>Value</th>" +
 					"<th>Price</th>" +
-					"<th>Date</th>" + 
+					"<th>Date</th>" +
 					"<th>IP</th>"
 				));
 
@@ -747,7 +747,7 @@ function AdminUtil()
 			{
 				var filenames = results.filenames;
 				var folder = results.folder;
-				
+
 				var writeButton = $("<button/>").text("Write logs").click(function() {
 					admin.sendAjax("server.cgi", {
 						action: "adminLogs",
