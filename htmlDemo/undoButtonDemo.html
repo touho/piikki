@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="piikkistyle.css">
+	<link href="http://fonts.googleapis.com/css?family=Cardo:400italic&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+<style type="text/css"></style></head>
+<body>
+<div id="container">
+
+	<div class="topImage">
+		<img src="img/ylaseppele.png" class="resize">
+	</div>
+
+	<div id="content" class="content"><div id="header" class="header"><h1>Hei Marko Rintamäki!</h1>
+<div class="main-commands"><div id="notme"><button class="non-button" onclick="piikki.buildUserPage()">Vaihda henkilöä</button></div><div id="login" class="login"><a href="user.html?id=1">Piikkaushistoria</a></div></div></div><div id="undoDiv">Siideri piikattu! <span id="undoButton" onclick="piikki.piikkaus(2, -1);">Undo</span></div><div id="piikkausbuttons" class="justified-adjustment"><div onclick="piikki.piikkaus('1',1)" class="button">Olut</div><div onclick="piikki.piikkaus('2',1)" class="button">Siideri</div><div onclick="piikki.piikkaus('3',1)" class="button">Lonkero</div><div onclick="piikki.piikkaus('4',1)" class="button">Ruoka</div><div onclick="piikki.piikkaus('5',1)" class="button">Tiukka</div></div></div>
+
+	<div class="bottomImage">
+		<img src="img/alaseppele.png" class="resizeLast">
+	</div>
+
+	<!--br/><br/><br/>
+	<div style="margin:10px;border:1px solid black;" id="log"></div-->
+
+</div>
+<script>piikkiBegin();</script>
+
+
+</body></html>
