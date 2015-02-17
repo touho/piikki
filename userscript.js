@@ -38,7 +38,7 @@ function UserUtil()
 			var code = "";
 			code += name+"<br/>";
 			code += "<input id='passwordinput' onkeydown='piikki.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
-			code += "<button onclick='user.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
+			code += "<button class=\"action-button\" onclick='user.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
 
 			content.html(code);
 			document.getElementById("passwordinput").focus();

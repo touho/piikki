@@ -43,10 +43,17 @@ function PiikkiUtil()
 	this.users = [];
 	this.items = [];
 
-	this.resetLocalStorage = function()
+	this.reset = function()
 	{
 		delete localStorage["piikkiUserId"];
 		delete localStorage["piikkiCommonPassword"];
+		this.common_password = "";
+		this.currentUserName = "";
+		this.currentUserId = -1;
+		this.users = [];
+		this.items = [];
+
+		return "Reset done! You should now refresh the page and log in.";
 	}
 
 	this.selectUser = function(id)
@@ -513,3 +520,5 @@ function PiikkiUtil()
 		xmlhttp.send(msg);
 	}
 }
+
+var help = "Reset piikki page: piikki.reset();";
