@@ -1,0 +1,307 @@
+* {
+  /*Box-sizing for all elements*/
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  /*Disabling selection. The below can be used for elements that should be enabled.
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -o-user-select: text;
+    user-select: text; */
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+  }
+
+  body {
+    font-family: 'Alegreya Sans', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+    margin: 0;
+  }
+
+  .topImage {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding-left: 30px;
+  }
+
+  .bottomImage {
+    max-width: 1024px;
+    text-align: center;
+    margin: 30px auto 30px;
+  }
+
+  .content {
+   max-width: 1024px;
+   margin: 0 auto;
+   text-align: center;
+ }
+
+ a {
+  color: black;
+  position: relative;
+}
+
+a:after {
+  border-bottom:1px solid #000;
+  content:'';
+  position:absolute;
+  left:0;
+  bottom:-1px;
+  width:100%;
+}
+
+a:hover {
+  color: #d0651c;
+}
+
+a:hover:after {
+  border-color: #d0651c;
+}
+
+a:active {
+  color: #C59678;
+}
+
+a:focus {
+  outline: none;
+}
+
+h1 {
+  font-family: 'Cardo', serif;
+  font-style: italic;
+  font-size: 40px;
+  display: inline;
+}
+
+.login {
+	display: inline;
+}
+
+#notme {
+  display: inline;
+}
+
+.non-button {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  text-decoration: underline;
+  padding: 0 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.non-button:after {
+  border-bottom:1px solid #000;
+  content:'';
+  position:absolute;
+  left: 20px;
+  bottom: -1px;
+  width: 74%;
+}
+
+.non-button:hover {
+  color: #d0651c;
+}
+
+.non-button:hover:after {
+  border-color: #d0651c;
+}
+
+.non-button:active {
+  color: #C59678;
+}
+
+.non-button:focus {
+  outline: none;
+}
+
+img.resize{
+  width: 60%;
+  height: auto;
+  margin: 20px auto 30px;
+}
+
+img.resizeLast{
+  width: 90%;
+  height: auto;
+}
+
+#piikkausbuttons {
+  width: 100%;
+  overflow: auto;
+  padding-bottom: 30px;
+}
+
+.button {
+	position: relative;
+  display: inline-block;
+  font-size: 25px;
+  border: 5px double black;
+  border-radius: 3px;
+  padding: 20px 30px 20px 70px;
+  box-shadow: 1px 2px 2px grey;
+  background: #FFFFFF;
+  cursor: pointer;
+  margin: 70px 40px 0 20px;
+  min-width: 250px;
+}
+
+.button:before {
+  display: block;
+  position: absolute;
+  content: '';
+  background: url(img/tynnyri.gif);
+  background-size: 40px 55px;
+  background-repeat: no-repeat;
+  height: 55px;
+  width: 40px;
+  left: 20px;
+  top: -10px;
+}
+
+.button:hover {
+  color: #d0651c;
+  outline: none;
+  border: 5px double #d0651c;
+  box-shadow: 1px 2px 2px #d0651c;
+}
+
+.button:hover:before {
+  background: url(img/tynnyri_varit2.png);
+  background-size: 40px 55px;
+  background-repeat: no-repeat;
+}
+
+.button:active {
+  top: 1px;
+}
+
+.button:focus {
+  outline: none;
+}
+
+.action-button {
+  position: relative;
+  font-size: 16px;
+  font-weight: bold;
+  border: 5px double black;
+  border-radius: 3px;
+  box-shadow: 1px 2px 2px grey;
+  background: #FFFFFF;
+  cursor: pointer;
+  padding: 15px;
+  margin: 0 40px 20px 40px;
+}
+
+.action-button:hover {
+  color: #d0651c;
+  outline: none;
+  border: 5px double #d0651c;
+  box-shadow: 1px 2px 2px #d0651c;
+}
+
+.action-button:active {
+  top: 1px;
+}
+
+.action-button:focus {
+  outline: none;
+}
+
+input {
+  font-size: 16px;
+  padding: 10px;
+  background: #FFFFFF;
+  border: 2px solid black;
+  border-radius: 3px;
+  margin: 0 20px 20px 20px;
+  width: 250px;
+}
+
+input:focus {
+  outline: 2px solid #d0651c;
+}
+
+input[type="checkbox"] {
+  margin: 3px 0.5ex;
+  width: auto;
+}
+
+input[type="checkbox"]:focus {
+  outline: none;
+}
+
+#autocomplete {
+  position: relative;
+	max-width: 250px;
+	background: #fff;
+	border: 2px solid black;
+	border-radius: 3px;
+  margin: -20px auto 0;
+}
+
+#autocomplete div {
+	cursor: pointer;
+	padding: 10px;
+  text-align: left;
+}
+
+#autocomplete div.selected {
+	background: #ddffff;
+}
+
+div.autocompleteName:nth-child(even) {
+  background: #dc9519;
+}
+
+#undoDiv {
+ background: #FFFFFF;
+ border-radius: 10px;
+ padding: 40px 40px 40px 40px;
+ margin-bottom: 45px;
+ opacity: 0.8;
+ filter: alpha(opacity=80); /* For IE8 and earlier */
+}
+
+/*Media queries*/
+
+/*Large screens*/
+@media screen and (min-width: 650px) {
+
+  .main-commands {
+    display: inline-block;
+  }
+
+}
+
+/*Medium screens*/
+@media screen and (max-width: 700px) {
+
+  .main-commands {
+    display: block;
+    padding-top: 20px;
+  }
+
+}
+
+/*Small screens*/
+@media screen and (max-width: 400px) {
+
+  img.resize{
+    margin: 20px auto 20px;
+  }
+
+  .button {
+  margin: 0 40px 50px 20px;
+  }
+
+}
