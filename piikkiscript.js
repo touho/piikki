@@ -177,10 +177,14 @@ function PiikkiUtil()
 			//loginElement.innerHTML = "<a href='user.html?id="+piikki.currentUserId+"'>Login</a>";
 			var code = "<button onclick=\"piikki.buildUserPage()\">En oo minä</button><br/><br/>";
 			var code = "<div id=\"header\" class=\"header\">";
+
 			code += "<h1>Hei " + piikki.currentUserName + "!</h1>\n";
+			code += "<div class=\"main-commands\">";
 			code += "<div id=\"notme\"><button class=\"non-button\" onclick=\"piikki.buildUserPage()\">Vaihda henkilöä</button></div>";
 			code += "<div id=\"login\" class=\"login\"><a href='user.html?id="+piikki.currentUserId+"'>Piikkaushistoria</a></div>";
-			code += "</div>";
+			code += "</div>"; // main-commands
+
+			code += "</div>"; // header
 
 			//contentElement.innerHTML = code;
 /*
@@ -248,7 +252,7 @@ function PiikkiUtil()
 		var code = "";
 		code += "<input id='usernameinput' onkeydown='piikki.authUsernameKeyPress(event);' type='text' placeholder='Koko nimesi?'/><br/>";
 		code += "<input id='passwordinput' onkeydown='piikki.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
-		code += "<button onclick='piikki.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
+		code += "<button class=\"action-button\" onclick='piikki.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
 
 		contentElement.innerHTML = code;
 	}
@@ -267,7 +271,7 @@ function PiikkiUtil()
 		this.getUsers(function(){
 			var code = "";
 
-			code += "<br/><input id='nameinput' type='text' onfocusout='piikki.clearAutocomplete();' onfocus='piikki.updateAutocomplete();' onkeyup='piikki.inputKeyUp(event);' onkeydown='piikki.inputKeyDown(event);' placeholder='Mikäs sun nimi olikaan?'/>";
+			code += "<br/><input id='nameinput' type='text' onfocusout='piikki.clearAutocomplete();' onfocus='piikki.updateAutocomplete();' onkeyup='piikki.inputKeyUp(event);' onkeydown='piikki.inputKeyDown(event);' placeholder='Nimesi?'/>";
 			code += "<input id='rememberMe' type='checkbox'/> Muista mut";
 			code += "<br/><div onmousedown='piikki.autoCompleteMouseDown();' style='visibility:hidden' id='autocomplete'></div>";
 
