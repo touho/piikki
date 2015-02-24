@@ -1,3 +1,4 @@
+//Anna
 function piikkiBegin()
 {
 	piikki = new PiikkiUtil();

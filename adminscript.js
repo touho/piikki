@@ -15,10 +15,13 @@ function AdminUtil()
 
 	this.init = function()
 	{
+		/*
 		if (piikki.common_password.length > 0)
 			navigation.find("span").eq(0).click();
+
 		else
 			window.location = "./index.html";
+			*/
 	}
 
 	this.doAuthentication = function()

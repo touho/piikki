@@ -1,45 +1,126 @@
 <!DOCTYPE html>
 <html><head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<script type="text/javascript" src="piikkiscript.js"></script>
 	<script type="text/javascript" src="jquery-2.0.2.min.js"></script>
 	<script type="text/javascript" src="userscript.js"></script>
 	<link rel="stylesheet" type="text/css" href="piikkistyle.css">
 	<link rel="stylesheet" type="text/css" href="userstyle.css">
-<style type="text/css"></style></head>
-<body>
+	<style type="text/css"></style></head>
+	<body>
 
-<div id="container">
+		<div id="container">
 
-	<div class="topImage">
-		<img src="img/ylaseppele.png" class="resize">
-	</div>
+			<div class="topImage">
+				<img src="img/ylaseppele.png" class="resize">
+			</div>
 
-	<div id="content" class="content"><b>Tietosi:</b><table><tbody><tr><td>Nimi:</td><td title="">Marko Rintamäki</td></tr><tr><td>Email:</td><td title="">marko</td></tr><tr><td>Saldo:</td><td title="">-63.15€</td></tr><tr><td>Admin:</td><td title="">Kyllä!</td></tr></tbody></table><a href="admin.html">Hallinnoi</a><br><br><b>Viimeisimmät maksusi:</b><div class="divBlock"></div><b>Viimeisimmät piikkauksesi:</b><div class="divBlock"><div><span class="dateSpan">[Tue 17.02.2015 08:38:53] </span><span class="textSpan" title="IP: ::1">Siideri</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:36:04] </span><span class="textSpan" title="IP: ::1">Siideri</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:36:00] </span><span class="textSpan" title="IP: ::1">Olut</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:31:19] </span><span class="textSpan" title="IP: ::1">Tiukka x -1</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:31:16] </span><span class="textSpan" title="IP: ::1">Tiukka</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:31:11] </span><span class="textSpan" title="IP: ::1">Siideri</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:19:49] </span><span class="textSpan" title="IP: ::1">Siideri x -1</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:19:47] </span><span class="textSpan" title="IP: ::1">Siideri</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:19:47] </span><span class="textSpan" title="IP: ::1">Olut</span></div><div><span class="dateSpan">[Tue 17.02.2015 08:18:39] </span><span class="textSpan" title="IP: ::1">Lonkero x -1</span></div></div><b>Vaihda salasanasi:</b><div class="divBlock"><input type="password" placeholder="uusi salasana"><br><input type="password" placeholder="uusi salasana uudelleen"><br><button>Vaihda</button></div></div>
+			<div id="content" class="content">
 
-	<div class="bottomImage">
-		<img src="img/alaseppele.png" class="resizeLast">
-	</div>
+				<div class="header">
+					<h1>Omat tiedot</h1>
+					<div class="main-commands">
+						<a href="" class="backButton">Takaisin piikkaamaan</a>
+						<a href="admin.html">Hallinnoi</a>
+					</div>
+				</div>
 
-	<!--br/><br/><br/>
-	<div style="margin:10px;border:1px solid black;" id="log"></div-->
+				<div class="layoutBlock">
+					<div class="divBlock">
+						<table>
+							<tbody>
+								<tr>
+									<td>Nimi</td>
+									<td title="">Marko Rintamäki</td>
+								</tr>
+								<tr>
+									<td>Email</td>
+									<td title="">marko</td>
+								</tr>
+								<tr>
+									<td>Admin</td>
+									<td title="">Kyllä!</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 
-</div>
+				<div class="layoutBlock">
+					<h2>Viimeisimmät piikkauksesi</h2>
+					<div class="divBlock">
+						<table>
+							<tbody>
+								<tr>
+									<td><span class="dateSpan">Ti 17.02.2015 08:38 </span></td>
+									<td title=""><span class="textSpan" title="IP: ::1">Siideri</span></td>
+								</tr>
+								<tr>
+									<td><span class="dateSpan">Ti 17.02.2015 08:36 </span></td>
+									<td title=""><span class="textSpan" title="IP: ::1">Siideri</span></td>
+								</tr>
+								<tr>
+									<td><span class="dateSpan">Ti 17.02.2015 08:36 </span></td>
+									<td title=""><span class="textSpan" title="IP: ::1">Olut</span></td>
+								</tr>
+								<tr>
+									<td><span class="dateSpan">Ti 17.02.2015 08:31 </span></td>
+									<td title=""><span class="textSpan" title="IP: ::1">Tiukka -1</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+
+					<div class="layoutBlock">
+						<h2>Viimeisimmät maksusi</h2>
+						<table>
+							<tbody>
+								<tr>
+									<td>Saldo</td>
+									<td title="">-63.15€</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="divBlock">Ei maksuja vielä!</div>
+					</div>
+
+					<div class="layoutBlock">
+						<h2>Vaihda salasana</h2>
+						<div class="divBlock">
+							<input type="password" placeholder="Uusi salasana">
+							<br>
+							<input type="password" placeholder="Uusi salasana uudelleen">
+							<br>
+							<button class="action-button">Vaihda</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="bottomImage">
+					<img src="img/alaseppele.png" class="resizeLast">
+				</div>
+
+				<!--br/><br/><br/>
+				<div style="margin:10px;border:1px solid black;" id="log"></div-->
+
+			</div>
 
 
 
-<!-- Old
+			<!-- Old
 
-<h1 id="name">Hei!</h1>
-<a href="index.html">Takaisin pääsivulle</a>
-<br/><br/>
-<div id="content"></div>
-<br/><br/><br/>
-Log:
-<div style="margin:10px;border:1px solid black;" id="log"></div>
+			<h1 id="name">Hei!</h1>
+			<a href="index.html">Takaisin pääsivulle</a>
+			<br/><br/>
+			<div id="content"></div>
+			<br/><br/><br/>
+			Log:
+			<div style="margin:10px;border:1px solid black;" id="log"></div>
 
--->
+		-->
 
-<script>userBegin();</script>
+		<script>userBegin();</script>
 
-</body></html>
+	</body></html>

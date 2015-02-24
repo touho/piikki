@@ -79,6 +79,13 @@ h1 {
   display: inline;
 }
 
+h2 {
+  font-family: 'Cardo', serif;
+  font-style: italic;
+  font-size: 25px;
+  display: inline;
+}
+
 .login {
 	display: inline;
 }
