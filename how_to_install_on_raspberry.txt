@@ -53,3 +53,17 @@ mysql -u root -p
 GRANT ALL ON piikki.* TO piikki@'%' IDENTIFIED BY 'piikkipassword';
 - Replace 'piikkipassword' with the password you entered in step 7
 
+11. Logs folder permissions:
+chmod a+w logs
+- NOTE: Do something fancier if you have skills
+
+12. Start using Piikki:
+- Go to the html page
+- Insert any username and password
+- Change index.html url to admin.html
+- Create first user (admin user)
+- Check the password from email
+- (If email doesn't work, check logs/emailDebug.txt)
+- Change password from the link
+
+13. Done!
