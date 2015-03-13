@@ -45,6 +45,7 @@ def executeActionImpl(module, fieldStorage):
 		return module.execute(fieldStorage)
 
 def authentication(fieldStorage):
+	mysqlUtil.createTables() #Creates tables if they doesn't exists yet
 	if "username" in fieldStorage and "password" in fieldStorage:
 		if mysqlUtil.isValidUsernameAndPassword(fieldStorage["username"].value, fieldStorage["password"].value):
 			return {"success": True, "common_password": config.common_password}

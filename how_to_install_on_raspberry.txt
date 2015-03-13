@@ -1,0 +1,55 @@
+How to install piikki on Raspberry:
+
+1. Get pip:
+https://pip.pypa.io/en/latest/installing.html
+
+2. Install pip (2min):
+sudo python get-pip.py
+
+3. Get code (10s):
+cd ~
+git clone https://github.com/touho/piikki.git piikki
+
+4. Update apt-get (2min):
+sudo apt-get update
+
+5. Install MySQL (12min):
+sudo apt-get install mysql-server python-mysqldb
+- Need to insert MySQL root password in the beginning.
+
+6. Install required python libraries (30s):
+sudo pip install -r requirements.txt
+
+7. Setup MySQL info for piikki:
+cp backend/config.py.example backend/config.py
+pico backend/config.py
+- Insert missing values
+
+8. Install Web Server (2min):
+sudo apt-get install apache2 -y
+
+9. Do apache config:
+cd /etc/apache2/
+sudo pico sites-available/default
+- Replace all /var/www -> /home/pi/piikki - This sets new default document dir
+- set /home/pi/piikki options:
+----------------------------------------------
+	Options ExecCGI FollowSymLinks MultiViews
+	AddHandler cgi-script .cgi
+	AllowOverride None
+	Order allow,deny
+	allow from all
+----------------------------------------------
+
+
+-----
+Now, if you restart apache (sudo apache2ctl restart) you should see piikki page when going to raspberry ip address.
+-----
+
+
+10. Setup MySQL user for piikki:
+mysql -u root -p
+- Insert password (step 5)
+GRANT ALL ON piikki.* TO piikki@'%' IDENTIFIED BY 'piikkipassword';
+- Replace 'piikkipassword' with the password you entered in step 7
+
