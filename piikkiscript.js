@@ -122,9 +122,14 @@ function PiikkiUtil()
 		if (isNaN(value)) value = 1;
 		value = ~~value;
 
+		triedPiikkaukset += value;
+		piikki.refreshPiikkausNumber();
+
 		piikki.sendAjax("server.cgi", {action: "piikkaus", userId: userId, itemId: itemId, value: value}, function(results) {
 			if (results.success)
 			{
+				successfulPiikkaukset += value;
+				piikki.refreshPiikkausNumber();
 				piikki.debugLog("" + value + " kpl " + piikki.getItemNameById(itemId) + " piikattu tyypille " + piikki.getUserNameById(userId));
 
 				var undoDiv = document.getElementById("undoDiv");
@@ -175,12 +180,23 @@ function PiikkiUtil()
 				piikki.debugLog("Unable to get items.");
 		});
 	}
+
+	this.refreshPiikkausNumber = function()
+	{
+		$("#number").text("Session piikkaukset: " + successfulPiikkaukset + "/" + triedPiikkaukset);
+	}
+
+	var triedPiikkaukset = 0;
+	var successfulPiikkaukset = 0;
 	this.buildItemPage = function()
 	{
 		if (isNaN(this.currentUserId) || this.currentUserId < 0) {
 			this.debugLog("Error, bad user id");
 			return;
 		}
+
+		triedPiikkaukset = 0;
+		successfulPiikkaukset = 0;
 
 		var code = "<div id=\"header\" class=\"header\">";
 		code += "<h1>Hei " + this.currentUserName + "!</h1>";
@@ -223,9 +239,13 @@ function PiikkiUtil()
 
 			code += "</div>";
 
+			code += "<span id='number'></span>";
+
+
 			contentElement.innerHTML = code;
 
 			$("#undoDiv").hide();
+			piikki.refreshPiikkausNumber();
 		});
 	}
 
