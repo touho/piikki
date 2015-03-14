@@ -53,9 +53,7 @@ left join payments on subTable.id = payments.userId
 group by subTable.id;
 	"""
 
-	timer = util.Timer("getAdminUsers sql")
 	result = mysqlUtil.fetchWithSQLCommand(sql);
-	timer.write()
 
 
 	#result = mysqlUtil.getAllUsers()

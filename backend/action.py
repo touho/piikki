@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import validationUtil, config, mysqlUtil
+import validationUtil, config, mysqlUtil, util
 
 from actions import (piikkaus, getUsers, getItems, userPage,
 	adminMain, adminUsers, adminItems, adminPiikkaukset, adminPayments, adminLogs)
@@ -32,7 +32,9 @@ def executeAction(fieldStorage, ip):
 	action = fieldStorage["action"].value
 
 	if action in modules:
-		return executeActionImpl(modules[action], fieldStorage)
+		timer = util.Timer("actionImpl")
+		rv = executeActionImpl(modules[action], fieldStorage)
+		timer.write()
 
 	return "invalid action:", action
 
