@@ -140,6 +140,10 @@ function PiikkiUtil()
 					else
 						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " undottu.";
 
+					if (undoTimeout)
+						clearTimeout(undoTimeout);
+					undoTimeout = null;
+
 					$(undoDiv).slideDown();
 					undoTimeout = setTimeout(function(){
 						$(undoDiv).fadeOut(5000);
