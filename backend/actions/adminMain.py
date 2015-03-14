@@ -10,7 +10,9 @@ from passlib.hash import pbkdf2_sha256
 requiredParameters = ["subAction"]
 
 def authenticateAdmin(fieldStorage):
+	timer = util.Timer("getAllUsers")
 	users = mysqlUtil.getAllUsers()
+	timer.write()
 	if len(users) == 0:
 		return True # No users in database. Accept connection!
 
@@ -25,8 +27,11 @@ def authenticateAdmin(fieldStorage):
 	result = mysqlUtil.fetchWithSQLCommand(sql)
 	if len(result) > 0:
 		realPasswordHash = result[0][0]
+		timer = util.Timer("password check")
 		if pbkdf2_sha256.verify(password, realPasswordHash):
+			timer.write()
 			return True
+		timer.write()
 
 	return False
 
