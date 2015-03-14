@@ -11,7 +11,7 @@ from passlib.hash import pbkdf2_sha256
 # t.write()
 
 def encrypt(password):
-	return pbkdf2_sha256.encrypt(password, rounds=10000, salt_size=19)
+	return pbkdf2_sha256.encrypt(password, rounds=1000, salt_size=10)
 def verify(password, passwordHash):
 	return pbkdf2_sha256.verify(password, passwordHash)
 
