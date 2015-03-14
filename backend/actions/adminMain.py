@@ -5,7 +5,6 @@ import datetime, math
 from .. import mysqlUtil, util
 from adminLogs import writeLogFiles
 from adminUsers import reportPaymentImpl
-from passlib.hash import pbkdf2_sha256
 
 requiredParameters = ["subAction"]
 
@@ -28,7 +27,7 @@ def authenticateAdmin(fieldStorage):
 	if len(result) > 0:
 		realPasswordHash = result[0][0]
 		timer = util.Timer("password check")
-		if pbkdf2_sha256.verify(password, realPasswordHash):
+		if util.verify(password, realPasswordHash):
 			timer.write()
 			return True
 		timer.write()

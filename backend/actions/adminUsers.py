@@ -3,7 +3,6 @@
 
 from .. import mysqlUtil, validationUtil, config, util
 from datetime import datetime
-from passlib.hash import pbkdf2_sha256
 import random, string
 import adminMain
 
@@ -87,7 +86,7 @@ def add(fieldStorage):
 		return {"success": False, "message": "User already"}
 
 	password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
-	passwordHash = pbkdf2_sha256.encrypt(password);
+	passwordHash = util.encrypt(password);
 
 	sql = "insert into users (name, email, isAdmin, password) VALUES('"+name+"', '"+email+"', "+str(isAdmin)+", '"+passwordHash+"');"
 	if mysqlUtil.commitSQLCommand(sql) > 0:
@@ -137,7 +136,7 @@ def resetPassword(fieldStorage):
 	id = int(fieldStorage["id"].value)
 
 	password = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(50))
-	passwordHash = pbkdf2_sha256.encrypt(password);
+	passwordHash = util.encrypt(password);
 
 	sql = "update users set password='"+passwordHash+"' where id = " + str(id) + ";"
 	if mysqlUtil.commitSQLCommand(sql) > 0:

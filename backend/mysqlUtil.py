@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from backend import config
-from passlib.hash import pbkdf2_sha256
+import util
 
 import MySQLdb
 
@@ -133,14 +133,14 @@ def getAllPayments(limit=0):
 			order by payments.date""" + limitStr)
 
 def isValidUsernameAndPassword(username, password):
-	passwordHash = pbkdf2_sha256.encrypt(password);
+	passwordHash = util.encrypt(password);
 
 	sql = "select password from users where name = '" + str(username) + "';"
 	result = fetchWithSQLCommand(sql)
 
 	if len(result) > 0:
 		realPasswordHash = result[0][0]
-		if pbkdf2_sha256.verify(password, realPasswordHash):
+		if util.verify(password, realPasswordHash):
 			return True #Correct password, let in
 
 	if len(getAllUsers()) == 0: #No users, let admin in
@@ -149,14 +149,14 @@ def isValidUsernameAndPassword(username, password):
 	return False #Don't let in!
 
 def isValidUserIdAndPassword(userId, password):
-	passwordHash = pbkdf2_sha256.encrypt(password);
+	passwordHash = util.encrypt(password);
 
 	sql = "select password from users where id = " + str(userId) + ";"
 	result = fetchWithSQLCommand(sql)
 
 	if len(result) > 0:
 		realPasswordHash = result[0][0]
-		if pbkdf2_sha256.verify(password, realPasswordHash):
+		if util.verify(password, realPasswordHash):
 			return True #Correct password, let in
 
 	if len(getAllUsers()) == 0: #No users, let admin in
@@ -169,16 +169,16 @@ def changePassword(fieldStorage):
 	userId = int(fieldStorage["userId"].value)
 
 	oldPassword = fieldStorage["oldPassword"].value
-	oldPasswordHash = pbkdf2_sha256.encrypt(oldPassword);
+	oldPasswordHash = util.encrypt(oldPassword);
 
 	newPassword = fieldStorage["newPassword"].value
-	newPasswordHash = pbkdf2_sha256.encrypt(newPassword);
+	newPasswordHash = util.encrypt(newPassword);
 
 	sql = "select password from users where id = " + str(userId) + ";"
 	result = fetchWithSQLCommand(sql)
 	if len(result) > 0:
 		realPasswordHash = result[0][0]
-		if pbkdf2_sha256.verify(oldPassword, realPasswordHash):
+		if util.verify(oldPassword, realPasswordHash):
 			sql = "update users set password='"+newPasswordHash+"' where id = " + str(userId) + ";"
 			result = commitSQLCommand(sql);
 			return result > 0

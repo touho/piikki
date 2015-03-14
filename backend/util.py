@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime
+from passlib.hash import pbkdf2_sha256
 
 
 #Usage:
@@ -9,7 +10,10 @@ from datetime import datetime
 # <do something...>
 # t.write()
 
-
+def encrypt(password):
+	return pbkdf2_sha256.encrypt(password, rounds=10000, salt_size=19)
+def verify(password, passwordHash):
+	return pbkdf2_sha256.verify(password, passwordHash)
 
 class Timer:
 	def __init__(self, name):
