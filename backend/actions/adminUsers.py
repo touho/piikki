@@ -9,18 +9,12 @@ import adminMain
 requiredParameters = ["subAction"]
 
 def execute(fieldStorage):
-	timer = util.Timer("adminUsers Auth")
 	if not adminMain.authenticateAdmin(fieldStorage):
 		return {"success": False, "message": "Bad admin username or password"}
 	subAction = fieldStorage["subAction"].value
 
-	timer.write()
-
 	if subAction == "get":
-		timer = util.Timer("adminUsers get function")
-		rv = get()
-		timer.write()
-		return rv
+		return get()
 	elif subAction == "add":
 		return add(fieldStorage)
 		return {"success": ret == "ok", "message": ret}
@@ -44,8 +38,6 @@ def get():
 
 	#IFNULL(ROUND(SUM(piikkaukset.price), 2), 0)
 
-	timer = util.Timer("getAdminUsers sqlStr")
-
 	sql = """
 select id, name, email, isAdmin,
 ROUND(IFNULL(SUM(payments.value),0),2) as payments,
@@ -59,11 +51,8 @@ group by users.id) as subTable
 left join payments on subTable.id = payments.userId
 group by subTable.id;
 	"""
-	timer.write()
 
-	timer = util.Timer("getAdminUsers sql")
 	result = mysqlUtil.fetchWithSQLCommand(sql);
-	timer.write()
 
 
 	#result = mysqlUtil.getAllUsers()

@@ -104,6 +104,8 @@ function PiikkiUtil()
 		return null;
 	}
 
+
+	var undoTimeout = null;
 	this.piikkaus = function(itemId, value)
 	{
 		var undoDiv = document.getElementById("undoDiv");
@@ -132,6 +134,11 @@ function PiikkiUtil()
 						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " piikattu! <span id='undoButton' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Undo</span>";
 					else
 						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " undottu.";
+
+					$(undoDiv).slideDown();
+					undoTimeout = setTimeout(function(){
+						$(undoDiv).fadeOut(5000);
+					}, 20000);
 				}
 			}
 			else
@@ -217,6 +224,8 @@ function PiikkiUtil()
 			code += "</div>";
 
 			contentElement.innerHTML = code;
+
+			$("#undoDiv").hide();
 		});
 	}
 

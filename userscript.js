@@ -97,6 +97,7 @@ function UserUtil()
 				if (isAdmin)
 					addRow("Admin:", "Kyllä!");
 				content.append(table);
+				
 				if (isAdmin)
 					content.append("<a href='admin.html'>Hallinnoi</a><br/><br/>");
 

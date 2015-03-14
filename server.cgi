@@ -7,7 +7,7 @@ cgitb.enable()
 from backend import action
 from backend import util
 
-DEBUG = True
+DEBUG = False
 
 
 def writeUsedTimeToLog(fieldStorage, timer):
