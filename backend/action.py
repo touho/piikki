@@ -35,6 +35,7 @@ def executeAction(fieldStorage, ip):
 		timer = util.Timer("actionImpl")
 		rv = executeActionImpl(modules[action], fieldStorage)
 		timer.write()
+		return rv
 
 	return "invalid action:", action
 
