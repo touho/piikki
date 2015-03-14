@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .. import mysqlUtil, validationUtil, config
+from .. import mysqlUtil, validationUtil, config, util
 from datetime import datetime
 from passlib.hash import pbkdf2_sha256
 import random, string
@@ -52,7 +52,12 @@ group by users.id) as subTable
 left join payments on subTable.id = payments.userId
 group by subTable.id;
 	"""
+
+	timer = util.Timer("getAdminUsers sql")
 	result = mysqlUtil.fetchWithSQLCommand(sql);
+	timer.write()
+
+
 	#result = mysqlUtil.getAllUsers()
 	if not result == None:
 		return {"success": True, "users": result}

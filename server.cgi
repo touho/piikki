@@ -5,21 +5,22 @@ import cgitb, cgi, sys, json, os, datetime
 cgitb.enable()
 
 from backend import action
+from backend import util
 
 DEBUG = True
 
-def writeUsedTimeToLog(fieldStorage, startTime, endTime):
-	diff = endTime - startTime
-	with open("logs/timeDebug.txt", "a") as outf:
-		s = ""
-		if "action" in fieldStorage:
-			s = fieldStorage["action"].value
-			if "subAction" in fieldStorage:
-				s += "." + fieldStorage["subAction"].value
-		else:
-			s = "?"
-		s += ": " + str(diff) + "\n"
-		outf.write(s);
+
+def writeUsedTimeToLog(fieldStorage, timer):
+	s = ""
+	if "action" in fieldStorage:
+		s = fieldStorage["action"].value
+		if "subAction" in fieldStorage:
+			s += "." + fieldStorage["subAction"].value
+	else:
+		s = "?"
+	timer.name = s
+	timer.write()
+
 
 
 print "Content-type:application/json;charset=utf-8"
@@ -27,11 +28,11 @@ print
 
 try:
 	if DEBUG:
-		startTime = datetime.datetime.now()
+		timer = util.Timer("")
 	fieldStorage = cgi.FieldStorage()
 	print json.dumps(action.executeAction(fieldStorage, cgi.escape(os.environ["REMOTE_ADDR"])))
 	if DEBUG:
-		writeUsedTimeToLog(fieldStorage, startTime, datetime.datetime.now())
+		writeUsedTimeToLog(fieldStorage, timer)
 
 except Exception as e:
 	if DEBUG:
