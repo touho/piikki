@@ -21,6 +21,7 @@ def execute(fieldStorage):
 		timer = util.Timer("adminUsers get function")
 		rv = get()
 		timer.write()
+		return rv
 	elif subAction == "add":
 		return add(fieldStorage)
 		return {"success": ret == "ok", "message": ret}
