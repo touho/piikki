@@ -39,6 +39,8 @@ def get():
 
 	#IFNULL(ROUND(SUM(piikkaukset.price), 2), 0)
 
+	timer = util.Timer("getAdminUsers sqlStr")
+
 	sql = """
 select id, name, email, isAdmin,
 ROUND(IFNULL(SUM(payments.value),0),2) as payments,
@@ -52,6 +54,7 @@ group by users.id) as subTable
 left join payments on subTable.id = payments.userId
 group by subTable.id;
 	"""
+	timer.write()
 
 	result = mysqlUtil.fetchWithSQLCommand(sql);
 
