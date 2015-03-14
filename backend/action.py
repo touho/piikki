@@ -40,11 +40,13 @@ def executeAction(fieldStorage, ip):
 	return "invalid action:", action
 
 def executeActionImpl(module, fieldStorage):
+	timer = util.Timer("action validation")
 	if not validationUtil.requirePOSTParameters(fieldStorage, module.requiredParameters):
 		return "invalid parameters:", fieldStorage.keys(), "required parameters:", module.requiredParameters
 	elif not validationUtil.checkDelimiterCharacter(fieldStorage, module.requiredParameters):
 		return "Error! A parameter contained delimiter sign ';'"
 	else:
+		timer.write()
 		return module.execute(fieldStorage)
 
 def authentication(fieldStorage):

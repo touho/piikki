@@ -10,12 +10,17 @@ import adminMain
 requiredParameters = ["subAction"]
 
 def execute(fieldStorage):
+	timer = util.Timer("adminUsers Auth")
 	if not adminMain.authenticateAdmin(fieldStorage):
 		return {"success": False, "message": "Bad admin username or password"}
 	subAction = fieldStorage["subAction"].value
 
+	timer.write()
+
 	if subAction == "get":
-		return get()
+		timer = util.Timer("adminUsers get function")
+		rv = get()
+		timer.write()
 	elif subAction == "add":
 		return add(fieldStorage)
 		return {"success": ret == "ok", "message": ret}
@@ -56,7 +61,9 @@ group by subTable.id;
 	"""
 	timer.write()
 
+	timer = util.Timer("getAdminUsers sql")
 	result = mysqlUtil.fetchWithSQLCommand(sql);
+	timer.write()
 
 
 	#result = mysqlUtil.getAllUsers()
