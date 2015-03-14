@@ -5,3 +5,5 @@ logs/*.csv
 
 logs/emailDebug.txt
 
+
+logs/timeDebug.txt
