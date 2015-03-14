@@ -272,6 +272,10 @@ div.autocompleteName:nth-child(even) {
  filter: alpha(opacity=80); /* For IE8 and earlier */
 }
 
+.conflict {
+  color: red;
+}
+
 /*Media queries*/
 
 /*Large screens*/

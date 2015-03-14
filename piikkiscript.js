@@ -184,6 +184,12 @@ function PiikkiUtil()
 	this.refreshPiikkausNumber = function()
 	{
 		$("#number").text("Session piikkaukset: " + successfulPiikkaukset + "/" + triedPiikkaukset);
+		if (successfulPiikkaukset != triedPiikkaukset)
+		{
+			$("#number").addClass("conflict");
+		}
+		else
+			$("#number").removeClass("conflict");
 	}
 
 	var triedPiikkaukset = 0;
