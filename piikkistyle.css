@@ -90,6 +90,10 @@ h2 {
   display: inline;
 }
 
+.dropdown {
+  display: inline-block;
+}
+
 .login {
 	display: inline;
 }
