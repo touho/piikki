@@ -137,7 +137,7 @@ function PiikkiUtil()
 				if (undoDiv)
 				{
 					if (value > 0)
-						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " piikattu! <button id='undoButton' class='action-button' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Peruuta</button>";
+						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " piikattu! <button id='undoButton' class='action-button undo-button' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Peruuta</button>";
 					else
 						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " undottu.";
 

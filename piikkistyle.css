@@ -290,6 +290,11 @@ input[type="checkbox"]:focus {
  filter: alpha(opacity=80); /* For IE8 and earlier */
 }
 
+.undo-button {
+  padding: 10px;
+  margin: 0;
+}
+
 .conflict {
   color: red;
 }
