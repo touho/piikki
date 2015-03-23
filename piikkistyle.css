@@ -30,6 +30,10 @@
     padding-left: 30px;
   }
 
+  .topImage a:after {
+    border-bottom: none;
+  }
+
   .bottomImage {
     max-width: 1024px;
     text-align: center;
