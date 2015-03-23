@@ -94,6 +94,12 @@ h2 {
   display: inline-block;
 }
 
+.rememberMe {
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 10px;
+}
+
 .login {
 	display: inline;
 }
@@ -256,12 +262,14 @@ input[type="checkbox"]:focus {
 }
 
 #autocomplete {
-  position: relative;
-	max-width: 250px;
+  position: absolute;
+	width: 250px;
 	background: #fff;
 	border: 2px solid black;
 	border-radius: 3px;
-  margin: -20px auto 0;
+  margin-top: -20px;
+  margin-left: 20px;
+  z-index: 100;
 }
 
 #autocomplete div {
