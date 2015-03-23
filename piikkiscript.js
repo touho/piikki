@@ -137,7 +137,7 @@ function PiikkiUtil()
 				if (undoDiv)
 				{
 					if (value > 0)
-						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " piikattu! <span id='undoButton' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Undo</span>";
+						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " piikattu! <button id='undoButton' class='action-button' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Peruuta</button>";
 					else
 						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " undottu.";
 
@@ -222,7 +222,7 @@ function PiikkiUtil()
 			code += "<h1>Hei " + piikki.currentUserName + "!</h1>\n";
 			code += "<div class=\"main-commands\">";
 			code += "<div id=\"notme\"><button class=\"non-button\" onclick=\"piikki.buildUserPage()\">Vaihda henkilöä</button></div>";
-			code += "<div id=\"login\" class=\"login\"><a href='user.html?id="+piikki.currentUserId+"'>Piikkaushistoria</a></div>";
+			code += "<div id=\"login\" class=\"login\"><a href='user.html?id="+piikki.currentUserId+"'>Omat tiedot</a></div>";
 			code += "</div>"; // main-commands
 
 			code += "</div>"; // header

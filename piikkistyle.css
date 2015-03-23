@@ -285,8 +285,7 @@ input[type="checkbox"]:focus {
 #undoDiv {
  background: #FFFFFF;
  border-radius: 10px;
- padding: 40px 40px 40px 40px;
- margin-bottom: 45px;
+ padding: 70px 40px 0;
  opacity: 0.8;
  filter: alpha(opacity=80); /* For IE8 and earlier */
 }
