@@ -267,11 +267,7 @@ input[type="checkbox"]:focus {
 }
 
 #autocomplete div.selected {
-	background: #ddffff;
-}
-
-div.autocompleteName:nth-child(even) {
-  background: #dc9519;
+	background: #FFE49B;
 }
 
 #undoDiv {
