@@ -320,7 +320,7 @@ function PiikkiUtil()
 
 			code += "<br/><div class='dropdown'><input id='nameinput' type='text' onfocusout='piikki.clearAutocomplete();' onfocus='piikki.updateAutocomplete();' onkeyup='piikki.inputKeyUp(event);' onkeydown='piikki.inputKeyDown(event);' placeholder='Nimesi?'/>";
 			code += "<br/><div onmousedown='piikki.autoCompleteMouseDown();' style='visibility:hidden' id='autocomplete'></div></div>";
-			code += "<div><input id='rememberMe' type='checkbox'/> Muista minut</div>";
+			code += "<div class='rememberMe'><input id='rememberMe' type='checkbox'/> Muista minut</div>";
 
 			//code += "<input id='rememberMe' type='checkbox' name='rememberMe' value='1'/> Muista mut täl selaimel";
 
