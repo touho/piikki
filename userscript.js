@@ -36,6 +36,7 @@ function UserUtil()
 		piikki.getUsers(function(){
 			var name = piikki.getUserNameById(userId);
 			var code = "";
+			code += "<div id='homeLink'><a href='./'>Pääsivulle</a></div>";
 			code += name+"<br/>";
 			code += "<input id='passwordinput' onkeydown='piikki.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
 			code += "<button class=\"action-button\" onclick='user.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
@@ -97,7 +98,7 @@ function UserUtil()
 				if (isAdmin)
 					addRow("Admin:", "Kyllä!");
 				content.append(table);
-				
+
 				if (isAdmin)
 					content.append("<a href='admin.html'>Hallinnoi</a><br/><br/>");
 
