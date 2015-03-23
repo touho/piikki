@@ -410,7 +410,7 @@ function PiikkiUtil()
 
 			auto.innerHTML = code;
 			if (visible != auto.style.visibility) auto.style.visibility = visible;
-			auto.style.display = "inline";
+			auto.style.display = "block";
 		}
 	}
 
