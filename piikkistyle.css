@@ -172,7 +172,7 @@ img.resizeLast{
   box-shadow: 1px 2px 2px grey;
   background: #FFFFFF;
   cursor: pointer;
-  margin: 70px 40px 0 20px;
+  margin: 50px 40px 0 20px;
   min-width: 250px;
 }
 
@@ -285,7 +285,7 @@ input[type="checkbox"]:focus {
 #undoDiv {
  background: #FFFFFF;
  border-radius: 10px;
- padding: 70px 40px 0;
+ padding: 50px 40px 0;
  opacity: 0.8;
  filter: alpha(opacity=80); /* For IE8 and earlier */
 }
