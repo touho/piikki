@@ -91,7 +91,11 @@ function UserUtil()
 					div = $("<div/>").addClass("divBlock");
 				}
 
-				addBlock("Tietosi:");
+				content.append("<a href='./'>Takaisin</a>");
+				if (isAdmin)
+					content.append("<a href='admin.html'>Hallinnoi</a>");
+
+				addBlock("<h1>Omat tiedot</h1>");
 				addRow("Nimi:", name);
 				addRow("Email:", email);
 				addRow("Saldo:", balance + "€")
@@ -99,21 +103,7 @@ function UserUtil()
 					addRow("Admin:", "Kyllä!");
 				content.append(table);
 
-				if (isAdmin)
-					content.append("<a href='admin.html'>Hallinnoi</a><br/><br/>");
-
-
-				addBlock("Viimeisimmät maksusi:");
-				for (var i = 0; i < paymentInformation.length; i++) {
-					var value = parseInt(paymentInformation[i][1]);
-					var date = "[" + paymentInformation[i][2] + "] ";
-
-					addLine(date, value + "€");
-				};
-				content.append(div);
-
-
-				addBlock("Viimeisimmät piikkauksesi:");
+				addBlock("<h2>Viimeisimmät piikkauksesi</h2>");
 				for (var i = 0; i < piikkausInfo.length; i++) {
 					var name = piikkausInfo[i][1];
 					var value = parseInt(piikkausInfo[i][2]);
@@ -124,10 +114,19 @@ function UserUtil()
 				};
 				content.append(div);
 
+				addBlock("<h2>Viimeisimmät maksusi</h2>");
+				for (var i = 0; i < paymentInformation.length; i++) {
+					var value = parseInt(paymentInformation[i][1]);
+					var date = "[" + paymentInformation[i][2] + "] ";
+
+					addLine(date, value + "€");
+				};
+				content.append(div);
+
 				addBlock("Vaihda salasanasi:");
 				var passwordInput = $("<input>").attr({type: "password", placeholder: "uusi salasana"});
 				var passwordInput2 = $("<input>").attr({type: "password", placeholder: "uusi salasana uudelleen"});
-				var passwordSendButton = $("<button/>").text("Vaihda").click(function(){
+				var passwordSendButton = $("<button class='action-button'/>").text("Vaihda").click(function(){
 					var newPassword = passwordInput.val();
 					var newPassword2 = passwordInput2.val();
 					if (newPassword.length <= 0) return;
