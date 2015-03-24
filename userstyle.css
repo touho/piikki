@@ -6,14 +6,17 @@ table, table th, table td {
 }
 
 tr td:first-child {
-	font-weight: bold;
 	text-align: right;
 }
 
 table {
 	border: none;
-	margin-bottom: 0 auto;
+	margin: 0px auto;
 	font-weight: normal;
+}
+
+td.bold {
+	font-weight: bold;
 }
 
 .layoutBlock {

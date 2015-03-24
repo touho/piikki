@@ -69,10 +69,19 @@ function UserUtil()
 				content.empty();
 				var table,div;
 
-				function addRow(key, value, title) {
+				function addRow(key, value, title, boldCol) {
+					if (table == null)
+					{
+						table = $("<table/>");
+						div.append(table);
+					}
 					var tr = $("<tr/>");
 					var keyTd = $("<td/>").text(key);
 					var valueTd = $("<td/>").text(value).attr("title", title || "");
+					if (boldCol == "left")
+						keyTd.addClass("bold");
+					else if (boldCol == "right")
+						valueTd.addClass("bold");
 					tr.append(keyTd).append(valueTd);
 					table.append(tr);
 				}
@@ -87,7 +96,7 @@ function UserUtil()
 
 				function addBlock(text) {
 					content.append(text);
-					table = $("<table/>");
+					table = null;
 					div = $("<div/>").addClass("divBlock");
 				}
 
@@ -100,12 +109,12 @@ function UserUtil()
 				//Tämä divin lopetus on 'main-commands'ille. Tulee väärään kohtaan. :(
 				content.append("</div>");
 
-				addRow("Nimi", name);
-				addRow("Email", email);
-				addRow("Saldo", balance + "€")
+				addRow("Nimi", name, null, "left");
+				addRow("Email", email, null, "left");
+				addRow("Saldo", balance + "€", null, "left")
 				if (isAdmin)
-					addRow("Admin", "Kyllä");
-				content.append(table);
+					addRow("Admin", "Kyllä", null, "left");
+				content.append(div);
 
 				addBlock("<h2>Viimeisimmät piikkauksesi</h2>");
 				for (var i = 0; i < piikkausInfo.length; i++) {
@@ -114,7 +123,7 @@ function UserUtil()
 					var date = piikkausInfo[i][3];
 					var ip = "IP: " + piikkausInfo[i][4];
 
-					addLine(date, name + (value == 1 ? "" : value), ip);
+					addRow(date, name + (value == 1 ? "" : value), ip, "right");
 				};
 				if (piikkausInfo.length == 0)
 				{
@@ -127,7 +136,7 @@ function UserUtil()
 					var value = parseInt(paymentInformation[i][1]);
 					var date = paymentInformation[i][2];
 
-					addLine(date, value + "€");
+					addRow(date, value + "€", null, "right");
 				};
 
 				if (paymentInformation.length == 0)
