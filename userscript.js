@@ -116,6 +116,10 @@ function UserUtil()
 
 					addLine(date, name + (value == 1 ? "" : value), ip);
 				};
+				if (piikkausInfo.length == 0)
+				{
+					div.append("Ei vielä piikkauksia");
+				}
 				content.append(div);
 
 				addBlock("<h2>Viimeisimmät maksusi</h2>");
@@ -125,6 +129,12 @@ function UserUtil()
 
 					addLine(date, value + "€");
 				};
+
+				if (paymentInformation.length == 0)
+				{
+					div.append("Ei vielä maksuja");
+				}
+
 				content.append(div);
 
 				addBlock("<h2>Vaihda salasana</h2>");
