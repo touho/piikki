@@ -91,11 +91,12 @@ function UserUtil()
 					div = $("<div/>").addClass("divBlock");
 				}
 
+				addBlock("<h1>Omat tiedot</h1>");
+			
 				content.append("<a href='./'>Takaisin</a>");
 				if (isAdmin)
 					content.append("<a href='admin.html'>Hallinnoi</a>");
 
-				addBlock("<h1>Omat tiedot</h1>");
 				addRow("Nimi:", name);
 				addRow("Email:", email);
 				addRow("Saldo:", balance + "€")
@@ -123,7 +124,7 @@ function UserUtil()
 				};
 				content.append(div);
 
-				addBlock("Vaihda salasanasi:");
+				addBlock("<h2>Vaihda salasana</h2>");
 				var passwordInput = $("<input>").attr({type: "password", placeholder: "uusi salasana"});
 				var passwordInput2 = $("<input>").attr({type: "password", placeholder: "uusi salasana uudelleen"});
 				var passwordSendButton = $("<button class='action-button'/>").text("Vaihda").click(function(){
