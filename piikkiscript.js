@@ -205,7 +205,7 @@ function PiikkiUtil()
 
 	this.refreshPiikkausNumber = function()
 	{
-		$("#number").text("Onnistuneet piikkaukset tälläkertaa: " + successfulPiikkaukset + "/" + triedPiikkaukset);
+		$("#number").text("Onnistuneet piikkaukset tällä kertaa: " + successfulPiikkaukset + "/" + triedPiikkaukset);
 		if (successfulPiikkaukset != triedPiikkaukset)
 		{
 			$("#number").addClass("conflict");

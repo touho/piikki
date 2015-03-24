@@ -297,7 +297,7 @@ input[type="checkbox"]:focus {
 }
 
 .conflict {
-  color: red;
+  color: #e0450c;
 }
 
 #homeLink {
