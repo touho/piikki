@@ -92,10 +92,11 @@ function UserUtil()
 				}
 
 				addBlock("<h1>Omat tiedot</h1>");
-			
-				content.append("<a href='./'>Takaisin</a>");
+
+				content.append("<div class='main-commands'><a href='./' class=backButton>Takaisin</a>");
 				if (isAdmin)
 					content.append("<a href='admin.html'>Hallinnoi</a>");
+				content.append("</div>");
 
 				addRow("Nimi:", name);
 				addRow("Email:", email);

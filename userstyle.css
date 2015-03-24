@@ -28,3 +28,8 @@ table {
 .dateSpan {
 	margin-right: 10px;
 }
+
+.backButton {
+	margin-left: 20px;
+	margin-right: 20px;
+}
