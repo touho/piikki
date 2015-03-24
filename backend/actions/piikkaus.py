@@ -34,9 +34,7 @@ def piikkaus(userId, itemId, value, ip):
 				t = util.Timer("commit")
 				con.commit()
 				t.write();
-				t = util.Timer("close connection")
 				con.close()
-				t.write()
 				return ret
 			else:
 				con.close()

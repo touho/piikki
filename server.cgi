@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import cgitb, cgi, sys, json, os, datetime
-cgitb.enable()
+import cgi, json, os
+
+DEBUG = False
+
+if DEBUG:
+	import cgitb, sys
+	cgitb.enable()
 
 from backend import action
 from backend import util
-
-DEBUG = True
 
 
 def writeUsedTimeToLog(fieldStorage, timer):
@@ -38,4 +41,4 @@ except Exception as e:
 	if DEBUG:
 		print "Error while executing action:", sys.exc_info()[0], str(e) #This may give too much information
 	else:
-		print "Error while executing action:", sys.exc_info()[0]
+		print "Error while executing action."
