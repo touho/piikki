@@ -95,7 +95,7 @@ function UserUtil()
 
 				content.append("<div class='main-commands'><a href='./?userId="+userId+"' class=backButton>Takaisin</a>");
 				if (isAdmin) {
-					content.append("<a href='admin.html'>Hallinnoi</a>");
+					$(".main-commands").first().append("<a href='admin.html'>Hallinnoi</a>");
 				};
 				//Tämä divin lopetus on 'main-commands'ille. Tulee väärään kohtaan. :(
 				content.append("</div>");
