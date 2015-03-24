@@ -124,7 +124,9 @@ function PiikkiUtil()
 	var undoTimeout = null;
 	this.piikkaus = function(itemId, value)
 	{
-		$("#undoDiv").fadeOut();
+		$("#undoDiv").animate({
+			opacity: 0.0
+		}, 2000);
 
 		var userId = this.currentUserId;
 		if (isNaN(userId) || userId < 0) return;
