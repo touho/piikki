@@ -304,6 +304,10 @@ input[type="checkbox"]:focus {
   margin-bottom: 50px;
 }
 
+.marginBottom {
+  margin-bottom: 20px;
+}
+
 /*Media queries*/
 
 /*Large screens*/
