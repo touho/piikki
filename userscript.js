@@ -86,7 +86,7 @@ function UserUtil()
 				}
 
 				function addBlock(text) {
-					content.append("<b>" + text + "</b>");
+					content.append(text);
 					table = $("<table/>");
 					div = $("<div/>").addClass("divBlock");
 				}
