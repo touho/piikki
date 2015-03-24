@@ -100,36 +100,36 @@ function UserUtil()
 				//Tämä divin lopetus on 'main-commands'ille. Tulee väärään kohtaan. :(
 				content.append("</div>");
 
-				addRow("Nimi:", name);
-				addRow("Email:", email);
-				addRow("Saldo:", balance + "€")
+				addRow("Nimi", name);
+				addRow("Email", email);
+				addRow("Saldo", balance + "€")
 				if (isAdmin)
-					addRow("Admin:", "Kyllä!");
+					addRow("Admin", "Kyllä");
 				content.append(table);
 
 				addBlock("<h2>Viimeisimmät piikkauksesi</h2>");
 				for (var i = 0; i < piikkausInfo.length; i++) {
 					var name = piikkausInfo[i][1];
 					var value = parseInt(piikkausInfo[i][2]);
-					var date = "[" + piikkausInfo[i][3] + "] ";
+					var date = piikkausInfo[i][3];
 					var ip = "IP: " + piikkausInfo[i][4];
 
-					addLine(date, name + (value == 1 ? "" : " x " + value), ip);
+					addLine(date, name + (value == 1 ? "" : value), ip);
 				};
 				content.append(div);
 
 				addBlock("<h2>Viimeisimmät maksusi</h2>");
 				for (var i = 0; i < paymentInformation.length; i++) {
 					var value = parseInt(paymentInformation[i][1]);
-					var date = "[" + paymentInformation[i][2] + "] ";
+					var date = paymentInformation[i][2];
 
 					addLine(date, value + "€");
 				};
 				content.append(div);
 
 				addBlock("<h2>Vaihda salasana</h2>");
-				var passwordInput = $("<input>").attr({type: "password", placeholder: "uusi salasana"});
-				var passwordInput2 = $("<input>").attr({type: "password", placeholder: "uusi salasana uudelleen"});
+				var passwordInput = $("<input>").attr({type: "password", placeholder: "Uusi salasana"});
+				var passwordInput2 = $("<input>").attr({type: "password", placeholder: "Vahvista uusi salasana"});
 				var passwordSendButton = $("<button class='action-button'/>").text("Vaihda").click(function(){
 					var newPassword = passwordInput.val();
 					var newPassword2 = passwordInput2.val();
