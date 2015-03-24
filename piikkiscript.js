@@ -126,7 +126,7 @@ function PiikkiUtil()
 	{
 		$("#undoDiv").animate({
 			opacity: 0.0
-		}, 2000);
+		}, 1000);
 
 		var userId = this.currentUserId;
 		if (isNaN(userId) || userId < 0) return;
