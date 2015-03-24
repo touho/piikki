@@ -97,14 +97,16 @@ function UserUtil()
 				if (isAdmin) {
 					content.append("<a href='admin.html'>Hallinnoi</a>");
 				};
+				//Tämä divin lopetus on 'main-commands'ille. Tulee väärään kohtaan. :(
 				content.append("</div>");
 
+				content.append("<div class='layoutBlock divBlock'>");
 				addRow("Nimi:", name);
 				addRow("Email:", email);
 				addRow("Saldo:", balance + "€")
 				if (isAdmin)
 					addRow("Admin:", "Kyllä!");
-				content.append(table);
+				content.append(table+"</div>");
 
 				addBlock("<h2>Viimeisimmät piikkauksesi</h2>");
 				for (var i = 0; i < piikkausInfo.length; i++) {
