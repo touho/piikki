@@ -116,9 +116,7 @@ function PiikkiUtil()
 	var undoTimeout = null;
 	this.piikkaus = function(itemId, value)
 	{
-		var undoDiv = document.getElementById("undoDiv");
-		if (undoDiv)
-			undoDiv.innerHTML = "";
+		$("#undoDiv").fadeOut();
 
 		var userId = this.currentUserId;
 		if (isNaN(userId) || userId < 0) return;
@@ -152,9 +150,13 @@ function PiikkiUtil()
 						clearTimeout(undoTimeout);
 					undoTimeout = null;
 
+					$(undoDiv).stop(true).css("opacity", 1);
 					$(undoDiv).slideDown();
 					undoTimeout = setTimeout(function(){
-						$(undoDiv).fadeOut(5000);
+						//$(undoDiv).fadeOut(5000);
+						$(undoDiv).animate({
+							opacity: 0.0
+						}, 5000).slideUp();
 					}, 20000);
 				}
 			}
