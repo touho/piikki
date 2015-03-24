@@ -300,8 +300,8 @@ input[type="checkbox"]:focus {
   color: red;
 }
 
-.bottomMargin {
-  margin-bottom: 20px;
+#homeLink {
+  margin-bottom: 50px;
 }
 
 /*Media queries*/
