@@ -550,6 +550,7 @@ function PiikkiUtil()
 	//private:
 
 	var contentElement = document.getElementById("content");
+	var requestCount = 0;
 
 	//parameters: {action: "act", param: "par"}
 	this.sendAjax = function(url, parameters, callback)
@@ -583,6 +584,11 @@ function PiikkiUtil()
 					}
 					catch(e){}
 				}
+				requestCount--;
+				if (requestCount == 0)
+				{
+					document.body.style.setProperty("cursor", "auto", "important");
+				}
 			}
 		}
 		xmlhttp.open("POST", url, true);
@@ -595,6 +601,8 @@ function PiikkiUtil()
 			if (i != 0) msg += "&";
 			msg += keys[i] + "=" + parameters[keys[i]];
 		}
+		requestCount++;
+		document.body.style.setProperty("cursor", "progress", "important");
 		xmlhttp.send(msg);
 	}
 }
