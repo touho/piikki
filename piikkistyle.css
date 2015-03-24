@@ -300,6 +300,10 @@ input[type="checkbox"]:focus {
   color: red;
 }
 
+.bottomMargin {
+  margin-bottom: 20px;
+}
+
 /*Media queries*/
 
 /*Large screens*/
