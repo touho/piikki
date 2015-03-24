@@ -91,6 +91,13 @@ function PiikkiUtil()
 			elem.innerHTML = msg + "<br/>" + elem.innerHTML;
 	}
 
+	this.getUserIdByName = function(name) {
+		for (var i = 0; i < this.users.length; i++) {
+			if (this.users[i].name == name) return this.users[i].id;
+		};
+		return null;
+	}
+
 	this.getUserNameById = function(id) {
 		for (var i = 0; i < this.users.length; i++) {
 			if (this.users[i].id == id) return this.users[i].name;
@@ -271,7 +278,12 @@ function PiikkiUtil()
 				{
 					piikki.common_password = results.common_password;
 					if (window["localStorage"]) localStorage["piikkiCommonPassword"] = piikki.common_password;
-					piikki.buildUserPage();
+
+					piikki.getUsers(function(){
+						var userId = piikki.getUserIdByName(user.value);
+						piikki.selectUser(userId);
+					});
+					//piikki.buildUserPage();
 				}
 				else
 					piikki.debugLog("Unable to authenticate.");
@@ -325,6 +337,8 @@ function PiikkiUtil()
 			//code += "<input id='rememberMe' type='checkbox' name='rememberMe' value='1'/> Muista mut täl selaimel";
 
 			contentElement.innerHTML = code;
+
+			$("#nameinput").focus();
 		});
 	}
 

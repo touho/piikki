@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from backend import config
-import util
+import util, sys
 
 import MySQLdb
 
@@ -10,7 +10,8 @@ def getConnection():
 	try:
 		# url, user, pass, db
 		con = MySQLdb.connect(config.db_host, config.db_user, config.db_pass, config.db_database)
-	except:
+	except Exception as e:
+		#print sys.exc_info()[0], str(e) # This gives more info if needed
 		return None
 	return con
 
@@ -138,12 +139,14 @@ def isValidUsernameAndPassword(username, password):
 	sql = "select password from users where name = '" + str(username) + "';"
 	result = fetchWithSQLCommand(sql)
 
-	if len(result) > 0:
+	if (result is not None) and len(result) > 0:
 		realPasswordHash = result[0][0]
 		if util.verify(password, realPasswordHash):
 			return True #Correct password, let in
 
-	if len(getAllUsers()) == 0: #No users, let admin in
+	allUsers = getAllUsers()
+
+	if allUsers == None or len(allUsers) == 0: #No users, let admin in
 		return True
 
 	return False #Don't let in!

@@ -7,6 +7,7 @@ requiredParameters = []
 
 def execute(fieldStorage):
 	#mysqlUtil.dropTables()
+
 	mysqlUtil.createTables()
 
 	con = mysqlUtil.getConnection()

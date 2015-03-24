@@ -20,6 +20,7 @@ modules = {
 }
 
 def executeAction(fieldStorage, ip):
+
 	if "common_password" not in fieldStorage or ("userId" in fieldStorage and "newPassword" in fieldStorage):
 		return authentication(fieldStorage)
 	if fieldStorage["common_password"].value != config.common_password:
@@ -54,5 +55,4 @@ def authentication(fieldStorage):
 	elif "userId" in fieldStorage and "oldPassword" in fieldStorage and "newPassword" in fieldStorage:
 		if mysqlUtil.changePassword(fieldStorage):
 			return {"success": True, "common_password": config.common_password}
-
 	return {"success": False, "message": "Bad authentication"}
