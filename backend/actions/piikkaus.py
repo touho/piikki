@@ -24,25 +24,19 @@ def piikkaus(userId, itemId, value, ip):
 	ip = str(ip)
 
 	if value > -100 and value < 100 and value is not 0:
-		t = util.Timer("make mysql connection")
 		con = mysqlUtil.getConnection()
-		t.write();
 
 		if con is None: return "invalid connection"
 
-		t = util.Timer("is valid user id")
 		if mysqlUtil.isValidUserId(userId, con):
-			t.write();
-			t = util.Timer("is valid item id")
 			if mysqlUtil.isValidItemId(itemId, con):
-				t.write();
-				t = util.Timer("piikkaus impl")
 				ret = piikkausImpl(userId, itemId, value, ip, con)
+				t = util.Timer("commit")
+				con.commit()
 				t.write();
 				t = util.Timer("close connection")
-				con.commit()
 				con.close()
-				t.write();
+				t.write()
 				return ret
 			else:
 				con.close()

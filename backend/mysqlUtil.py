@@ -9,7 +9,9 @@ import MySQLdb
 def getConnection():
 	try:
 		# url, user, pass, db
+		t = util.Timer("Connect to MySQL")
 		con = MySQLdb.connect(config.db_host, config.db_user, config.db_pass, config.db_database)
+		t.write()
 	except Exception as e:
 		#print sys.exc_info()[0], str(e) # This gives more info if needed
 		return None
