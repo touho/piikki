@@ -37,7 +37,7 @@ function UserUtil()
 			var name = piikki.getUserNameById(userId);
 			var code = "";
 			code += "<div id='homeLink'><a href='./'>Takaisin</a></div>";
-			code += "<h2>"+name+"</h2>";
+			code += "<div><h2>"+name+"</h2></div>";
 			code += "<input id='passwordinput' onkeydown='piikki.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
 			code += "<button class=\"action-button\" onclick='user.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
 
