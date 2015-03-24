@@ -9,7 +9,7 @@ var user;
 function UserUtil()
 {
 	var userPassword = "";
-	var userId = 0;
+	var userId = -1;
 	var params = window.location.search.substr(1);
 	var i = params.indexOf("id=") + 3;
 	userId = parseInt(params.substr(i));
@@ -36,7 +36,7 @@ function UserUtil()
 		piikki.getUsers(function(){
 			var name = piikki.getUserNameById(userId);
 			var code = "";
-			code += "<div id='homeLink'><a href='./'>Takaisin</a></div>";
+			code += "<div id='homeLink'><a href='./?userId="+userId+"'>Takaisin</a></div>";
 			code += "<div class='marginBottom'><h2>"+name+"</h2></div>";
 			code += "<input id='passwordinput' onkeydown='piikki.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
 			code += "<button class=\"action-button\" onclick='user.doAuthentication();' id='authbutton'>Tunnistaudu</button>";
@@ -93,7 +93,7 @@ function UserUtil()
 
 				addBlock("<h1>Omat tiedot</h1>");
 
-				content.append("<div class='main-commands'><a href='./' class=backButton>Takaisin</a>");
+				content.append("<div class='main-commands'><a href='./?userId="+userId+"' class=backButton>Takaisin</a>");
 				if (isAdmin) {
 					content.append("<a href='admin.html'>Hallinnoi</a>");
 				};

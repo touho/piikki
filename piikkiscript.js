@@ -21,7 +21,15 @@ function piikkiBegin()
 	}
 
 	if (piikki.common_password.length > 0) {
-		piikki.buildUserPage();
+		var userId = piikki.getUserIdFromUrl();
+		if (!isNaN(userId))
+		{
+			piikki.getUsers(function(){
+				piikki.selectUser(userId);
+			});
+		}
+		else
+			piikki.buildUserPage();
 	}
 	else
 	{
@@ -523,6 +531,20 @@ function PiikkiUtil()
 		{
 		}
 		return false;
+	}
+
+	this.getUserIdFromUrl = function()
+	{
+		try
+		{
+			var params = window.location.search.substr(1);
+			var idIndex = params.indexOf("userId=") + 7;
+			return parseInt(params.substr(idIndex));
+		}
+		catch(e)
+		{
+		}
+		return null;
 	}
 
 	//private:
