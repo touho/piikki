@@ -45,7 +45,7 @@ def app(environ, start_response):
 		else:
 			yield "Error while executing action."
 
-if True:
+if False:
 	WSGIServer(app).run()
 else:
 	print "Content-type:application/json;charset=utf-8"
