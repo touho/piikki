@@ -123,7 +123,7 @@ function PiikkiUtil()
 		if (isNaN(value)) value = 1;
 		value = ~~value;
 
-		piikki.sendAjax("server.cgi", {action: "piikkaus", userId: userId, itemId: itemId, value: value}, function(results) {
+		piikki.sendAjax("server.fcgi", {action: "piikkaus", userId: userId, itemId: itemId, value: value}, function(results) {
 			if (results.success)
 			{
 				piikki.debugLog("" + value + " kpl " + piikki.getItemNameById(itemId) + " piikattu tyypille " + piikki.getUserNameById(userId));
@@ -143,7 +143,7 @@ function PiikkiUtil()
 	}
 	this.getUsers = function(callback)
 	{
-		piikki.sendAjax("server.cgi", {action: "getUsers"}, function(results) {
+		piikki.sendAjax("server.fcgi", {action: "getUsers"}, function(results) {
 			if (results.success)
 			{
 				piikki.users = results.users;
@@ -158,7 +158,7 @@ function PiikkiUtil()
 	}
 	this.getItems = function(callback)
 	{
-		piikki.sendAjax("server.cgi", {action: "getItems"}, function(results) {
+		piikki.sendAjax("server.fcgi", {action: "getItems"}, function(results) {
 			if (results.success)
 			{
 				piikki.items = results.items;
@@ -229,7 +229,7 @@ function PiikkiUtil()
 		var pass = document.getElementById("passwordinput");
 
 		if (user && pass && user.value.length > 0 && pass.value.length > 0) {
-			piikki.sendAjax("server.cgi", {username: user.value, password: pass.value}, function(results) {
+			piikki.sendAjax("server.fcgi", {username: user.value, password: pass.value}, function(results) {
 				if (results.success)
 				{
 					piikki.common_password = results.common_password;
@@ -416,7 +416,7 @@ function PiikkiUtil()
 			alert("Salasanan syöttö uudelleen epäonnistui.");
 			return;
 		}
-		piikki.sendAjax("server.cgi", {userId: changePasswordUserId, oldPassword: changePasswordPassword, newPassword: newPassword}, function(results) {
+		piikki.sendAjax("server.fcgi", {userId: changePasswordUserId, oldPassword: changePasswordPassword, newPassword: newPassword}, function(results) {
 			if (results.success)
 			{
 				piikki.common_password = results.common_password;

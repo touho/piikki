@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import os
 from datetime import datetime
 from passlib.hash import pbkdf2_sha256
 

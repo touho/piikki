@@ -74,7 +74,7 @@ function AdminUtil()
 	//Not in gui. Use from commandline
 	this.resetDatabase = function() {
 		if (!confirm("Are you sure you want to reset whole database?")) return;
-		admin.sendAjax("server.cgi", {"action": "adminMain", "subAction": "reset"}, function(results) {
+		admin.sendAjax("server.fcgi", {"action": "adminMain", "subAction": "reset"}, function(results) {
 			if (results.success)
 				alert(doneText);
 			else
@@ -86,7 +86,7 @@ function AdminUtil()
 	this.buildMainPage = function()
 	{
 		this.selectButton("mainbutton");
-		admin.sendAjax("server.cgi", {action: "adminMain", subAction: "get"}, function(results) {
+		admin.sendAjax("server.fcgi", {action: "adminMain", subAction: "get"}, function(results) {
 			if (!results.success) {
 				admin.buildAuthenticationPage();
 				return;
@@ -102,7 +102,7 @@ function AdminUtil()
 					if (confirmationText.length == 0 || confirm(confirmationText))
 					{
 						actionParams["action"] = "adminMain";
-						admin.sendAjax("server.cgi", actionParams, function(results) {
+						admin.sendAjax("server.fcgi", actionParams, function(results) {
 							if (results.success)
 								alert(doneText);
 							else
@@ -188,7 +188,7 @@ function AdminUtil()
 		var rebuildCommand = function(){ if (isUsers) admin.buildUsersPage(); else admin.buildItemsPage();};
 
 		this.selectButton(buttonId);
-		admin.sendAjax("server.cgi", {action: action, subAction: "get"}, function(results) {
+		admin.sendAjax("server.fcgi", {action: action, subAction: "get"}, function(results) {
 			if (!results.success) {
 				admin.buildAuthenticationPage();
 				return;
@@ -248,7 +248,7 @@ function AdminUtil()
 
 
 					var submitButton = $("<button/>").text("Submit changes!").click(function(){
-						admin.sendAjax("server.cgi", {
+						admin.sendAjax("server.fcgi", {
 							action: action,
 							subAction: "edit",
 							id: parseInt(id.text()),
@@ -312,7 +312,7 @@ function AdminUtil()
 								return;
 							}
 
-							admin.sendAjax("server.cgi", {
+							admin.sendAjax("server.fcgi", {
 								action: action,
 								subAction: "reportPayment",
 								id: parseInt(id.text()),
@@ -334,7 +334,7 @@ function AdminUtil()
 
 					var resetPasswordButton = $("<button/>").text("Reset Password").click(function() {
 						if (!confirm("Are you sure you want to reset user's password and set it by email?")) return;
-						admin.sendAjax("server.cgi", {
+						admin.sendAjax("server.fcgi", {
 							action: action,
 							subAction: "resetPassword",
 							id: parseInt(id.text())
@@ -357,7 +357,7 @@ function AdminUtil()
 
 						if (confirm(confirmation))
 						{
-							admin.sendAjax("server.cgi", {
+							admin.sendAjax("server.fcgi", {
 								action: action,
 								subAction: "remove",
 								id: parseInt(id.text())
@@ -461,7 +461,7 @@ function AdminUtil()
 					isAdminInput.attr({"checked": "checked", "disabled": true});
 				}
 				var addButton2 = $("<button/>").text("Add!").click(function(){
-					admin.sendAjax("server.cgi", {
+					admin.sendAjax("server.fcgi", {
 						action: action,
 						subAction: "add",
 						name: nameInput.val(),
@@ -528,7 +528,7 @@ function AdminUtil()
 								function addUser(name, email, balance, isAdmin)
 								{
 									waitCount++;
-									admin.sendAjax("server.cgi", {
+									admin.sendAjax("server.fcgi", {
 										action: action,
 										subAction: "add",
 										name: name,
@@ -541,7 +541,7 @@ function AdminUtil()
 											addedUsers++;
 											if (balance != 0) {
 												waitCount++;
-												admin.sendAjax("server.cgi", {
+												admin.sendAjax("server.fcgi", {
 													action: action,
 													subAction: "reportPayment",
 													id: addResults.userId,
@@ -641,7 +641,7 @@ function AdminUtil()
 	{
 		this.selectButton("piikkauksetbutton");
 
-		admin.sendAjax("server.cgi", {action: "adminPiikkaukset"}, function(results) {
+		admin.sendAjax("server.fcgi", {action: "adminPiikkaukset"}, function(results) {
 			if (!results.success) {
 				admin.buildAuthenticationPage();
 				return;
@@ -694,7 +694,7 @@ function AdminUtil()
 	{
 		this.selectButton("paymentsbutton");
 
-		admin.sendAjax("server.cgi", {action: "adminPayments"}, function(results) {
+		admin.sendAjax("server.fcgi", {action: "adminPayments"}, function(results) {
 			if (!results.success) {
 				admin.buildAuthenticationPage();
 				return;
@@ -738,7 +738,7 @@ function AdminUtil()
 	this.buildLogsPage = function()
 	{
 		this.selectButton("logsbutton");
-		admin.sendAjax("server.cgi", {action: "adminLogs", subAction: "get"}, function(results) {
+		admin.sendAjax("server.fcgi", {action: "adminLogs", subAction: "get"}, function(results) {
 			if (!results.success) {
 				admin.buildAuthenticationPage();
 				return;
@@ -750,7 +750,7 @@ function AdminUtil()
 				var folder = results.folder;
 
 				var writeButton = $("<button/>").text("Write logs").click(function() {
-					admin.sendAjax("server.cgi", {
+					admin.sendAjax("server.fcgi", {
 						action: "adminLogs",
 						subAction: "write"
 					}, function(results) {

@@ -51,7 +51,7 @@ function UserUtil()
 			return;
 		}
 
-		piikki.sendAjax("server.cgi", {action: "userPage", subAction: "get", userId: userId, password: userPassword}, function(results) {
+		piikki.sendAjax("server.fcgi", {action: "userPage", subAction: "get", userId: userId, password: userPassword}, function(results) {
 			if (results.success)
 			{
 				var userInfo = results.userInformation;
@@ -158,7 +158,7 @@ function UserUtil()
 						return;
 					}
 
-					piikki.sendAjax("server.cgi", {userId: userId, oldPassword: userPassword, newPassword: newPassword}, function(results) {
+					piikki.sendAjax("server.fcgi", {userId: userId, oldPassword: userPassword, newPassword: newPassword}, function(results) {
 						if (results.success)
 						{
 							userPassword = newPassword;
