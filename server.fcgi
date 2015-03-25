@@ -29,7 +29,8 @@ def app(environ, start_response):
 	#start_response('200 OK', [('Content-Type', 'text/html')])
 
 	start_response('200 OK', [('Content-Type', 'text/html')])
-
+	yield "Marko"
+	"""
 	try:
 		if DEBUG:
 			timer = util.Timer("M")
@@ -44,6 +45,7 @@ def app(environ, start_response):
 			yield "Error while executing action:", sys.exc_info()[0], str(e) #This may give too much information
 		else:
 			yield "Error while executing action."
+	"""
 
 if True:
 	WSGIServer(app).run()
