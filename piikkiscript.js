@@ -97,6 +97,8 @@ function PiikkiUtil()
 		var elem = document.getElementById("log");
 		if (elem)
 			elem.innerHTML = msg + "<br/>" + elem.innerHTML;
+		else
+			console.log(msg);
 	}
 
 	this.getUserIdByName = function(name) {
@@ -174,7 +176,7 @@ function PiikkiUtil()
 				piikki.debugLog("Piikkaus epäonnistui: " + results.message);
 		});
 	}
-	this.getUsers = function(callback)
+	this.getUsers = function(callback, failCallback)
 	{
 		piikki.sendAjax("server.fcgi", {action: "getUsers"}, function(results) {
 			if (results.success)
@@ -186,7 +188,11 @@ function PiikkiUtil()
 				if (callback) callback();
 			}
 			else
-				piikki.debugLog("Unable to get users.");
+			{
+				piikki.debugLog("Unable to get users. " + results.message);
+				if (failCallback)
+					failCallback();
+			}
 		});
 	}
 	this.getItems = function(callback)
@@ -201,7 +207,7 @@ function PiikkiUtil()
 				if (callback) callback();
 			}
 			else
-				piikki.debugLog("Unable to get items.");
+				piikki.debugLog("Unable to get items. " + results.message);
 		});
 	}
 
@@ -351,6 +357,8 @@ function PiikkiUtil()
 			contentElement.innerHTML = code;
 
 			$("#nameinput").focus();
+		}, function(){
+			contentElement.innerHTML = "Piikki on epäkunnossa";
 		});
 	}
 
