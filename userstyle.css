@@ -26,6 +26,7 @@ td.bold {
 .divBlock {
 	margin-top: 20px;
 	margin-bottom: 40px;
+
 }
 
 .dateSpan {
@@ -35,4 +36,16 @@ td.bold {
 .backButton {
 	margin-left: 20px;
 	margin-right: 20px;
+}
+
+* {
+	-webkit-user-select: text !important;
+    -khtml-user-select: text !important;
+    -moz-user-select: text !important;
+    -o-user-select: text !important;
+    user-select: text !important;
+}
+
+.editButton {
+	margin-left: 10px;
 }

@@ -1,7 +1,7 @@
  #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .. import mysqlUtil, util
+from .. import mysqlUtil, util, validationUtil
 
 requiredParameters = ["subAction", "userId", "password"]
 
@@ -53,6 +53,20 @@ limit 3;
 			"piikkausInformation": piikkausInformation,
 			"paymentInformation": paymentInformation
 		}
+	elif subAction == "changeEmail":
+		requredParams = ["email"]
+		if not validationUtil.requirePOSTParameters(fieldStorage, requredParams):
+			return "invalid sub params. required: " + str(requredParams)
+
+		email = fieldStorage["email"].value;
+
+		sql = "update users set email='"+email+"' where id = " + str(userId) + ";"
+		if mysqlUtil.commitSQLCommand(sql) > 0:
+			return {
+				"success": True,
+				"message": "ok"
+			}
+		return {"success": False, "message": "Unable to change email."}
 	else:
 		return "unknown subAction " + str(subAction)
 		

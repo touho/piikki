@@ -75,9 +75,9 @@ function UserUtil()
 						table = $("<table/>");
 						div.append(table);
 					}
-					var tr = $("<tr/>");
-					var keyTd = $("<td/>").text(key);
-					var valueTd = $("<td/>").text(value).attr("title", title || "");
+					var tr = $("<tr/>").addClass(key + "UserRow");
+					var keyTd = $("<td/>").text(key).addClass("keyElement");
+					var valueTd = $("<td/>").text(value).attr("title", title || "").addClass("valueElement");
 					if (boldCol == "left")
 						keyTd.addClass("bold");
 					else if (boldCol == "right")
@@ -175,6 +175,26 @@ function UserUtil()
 				div.append(passwordInput).append("<br/>").append(passwordInput2).append("<br/>").append(passwordSendButton);
 				content.append(div);
 
+
+				// Email editing:
+				var editButton = $("<button>").text("edit").addClass("editButton").click(function(){
+					var newEmail = prompt("Inser your email", email);
+					if (newEmail)
+					{
+						piikki.sendAjax("server.fcgi", {action: "userPage", subAction: "changeEmail", userId: userId, password: userPassword, email: newEmail}, function(results) {
+							if (results.success)
+							{
+								user.buildInfo();
+							}
+							else
+							{
+								alert("Sähköpostiosoitteen vaihto epäonnistui.");
+								piikki.debugLog("Failed to change email");
+							}
+						});
+					}
+				});
+				$(".EmailUserRow .valueElement").append(editButton);
 			}
 			else
 			{
