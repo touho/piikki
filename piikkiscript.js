@@ -410,6 +410,9 @@ function PiikkiUtil()
 			{
 				if (piikki.selectedAutocompleteIndex >= 0 && piikki.selectedAutocompleteIndex < autocompleteUsers.length)
 					piikki.selectUser(autocompleteUsers[piikki.selectedAutocompleteIndex].id);
+				else if (autocompleteUsers.length > 0)
+					piikki.selectUser(autocompleteUsers[0].id);
+				
 				e.preventDefault();
 				e.stopPropagation();
 				return;
