@@ -7,3 +7,7 @@ logs/emailDebug.txt
 
 
 logs/timeDebug.txt
+
+logs/mailErrors.txt
+
+logs/mailStatus.txt

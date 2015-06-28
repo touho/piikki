@@ -5,6 +5,7 @@ import datetime, math
 from .. import mysqlUtil, util
 from adminLogs import writeLogFiles
 from adminUsers import reportPaymentImpl
+import time
 
 requiredParameters = ["subAction"]
 
@@ -61,62 +62,19 @@ def execute(fieldStorage):
 
 def sendPaymentRequest():
 
-	# Balance = Balance - Piikkausten summa
-	sql = """
-		update users
-		inner join
-		(select users.id as userId, SUM(items.price) as piikkaukset
-		from users
-		left join piikkaukset on users.id = piikkaukset.userId
-		left join items on piikkaukset.itemId = items.id
-		group by users.id)
-		as sum on users.id = sum.userId
-		set users.balance = IFNULL(users.balance, 0) - IFNULL(sum.piikkaukset, 0);
-	"""
-	"""
-	con = mysqlUtil.getConnection()
-	if not con:
-		return "fail"
-	cur = con.cursor()
-	cur.execute(sql)
-
-	# Don't commit yet.
-
-	datestring = getLogDateString()
-
-	ret = list(mysqlUtil.getAllPiikkaukset())
-	ret.insert(0, ["UserId", "ItemId", "User", "Item", "Value", "Date", "IP"])
-	if ret:
-		writeLogFile(ret, "piikkaukset", datestring)
-
-	ret = list(mysqlUtil.getAllPayments())
-	ret.insert(0, ["UserId", "User", "Value", "Date"])
-	if ret:
-		writeLogFile(ret, "payments", datestring)
-
-	cur.close()
-	con.commit() # Now commit
-	con.close()
-
-	ret = list(mysqlUtil.getAllUsers())
-	ret.insert(0, ["UserId", "UserName", "Email", "Balance"])
-	if ret:
-		writeLogFile(ret, "users", datestring)
-
-	sendEmail()
-	
-	mysqlUtil.resetPiikkauksetAndPayments()
-
-	sql = "delete from items where items.toBeRemoved = 1;"
-	mysqlUtil.commitSQLCommand(sql)
-	"""
-
-	sendEmail()
-	
-	return "fail"
-
-def sendEmail():
 	users = mysqlUtil.getAllUsers()
+
+	with open("logs/mailErrors.txt", "w") as myfile:
+		myfile.write("Errors:\n")
+
+	def setStatus(status, sent, total):
+		with open("logs/mailStatus.txt", "w") as myfile:
+   			myfile.write(status + "\n")
+   			myfile.write(str(sent) + "\n")
+   			myfile.write(str(total) + "\n")
+
+	total = len(users)
+	sent = 0
 
 	for user in users:
 		name = user[1]
@@ -128,13 +86,29 @@ def sendEmail():
 		# get rid of negative zero
 		balanceStr = "%.2f" % math.copysign(-balance, -balance+0.0001)
 
-		sender = "Piikkimestari"
-		header = "Piikkilaskusi " + date
+		subject = "Piikkilaskusi " + date
 		message = "Hei, " + name + "!\n\n"
 		message += "Piikkilaskusi on " + balanceStr + "e."
 
+		try:
+			util.sendEmail(email, name, subject, message)
+		except Exception as e:
+			with open("logs/mailErrors.txt", "a") as myfile:
+				myfile.write("Error while sending mail to " + name + " <" + email + "> " + str(e) + "\n");
 
-		#TODO: sendEmailImpl(sender, email, header, message)
+		sent += 1
+		setStatus("Sending emails", sent, total)
+		time.sleep(2);
+
+		with open("logs/emailDebug.txt", "w") as myfile:
+   			myfile.write(message)
+
+	setStatus("Emails sent", sent, total)
+	time.sleep(10)
+	setStatus("Email sender idling", 0, 0)
+
+	return "ok"
+
 
 def getPaymentDateString():
 	return datetime.datetime.today().strftime("%Y-%m-%d")

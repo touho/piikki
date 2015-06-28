@@ -13,6 +13,13 @@ function AdminUtil()
 	var adminUsername = "";
 	var adminPassword = "";
 
+	var emailPollingInterval = null;
+	this.clearIntervals = function(){
+		if (emailPollingInterval)
+			clearInterval(emailPollingInterval);
+		emailPollingInterval = null;
+	}
+
 	this.init = function()
 	{
 		if (piikki.common_password.length > 0)
@@ -50,6 +57,7 @@ function AdminUtil()
 	}
 	this.buildAuthenticationPage = function()
 	{
+		this.clearIntervals();
 		var code = "";
 		code += "<input id='usernameinput' onkeydown='admin.authUsernameKeyPress(event);' type='text' placeholder='Koko nimesi?'/><br/>";
 		code += "<input id='passwordinput' onkeydown='admin.authPasswordKeyPress(event);' type='password' placeholder='Salasanasi?'/><br/>";
@@ -83,8 +91,32 @@ function AdminUtil()
 		});
 	}
 
+	this.createMainPageInterval = function()
+	{
+		emailPollingInterval = setInterval(function(){
+			$.get("logs/mailStatus.txt").done(function(result){
+				if (result)
+				{
+					result = result.split("\n");
+					if (result.length > 2) {
+						var html = "Status: " + result[0] + "<br/>";
+						if (result[2] != "0")
+							html += "Progress: " + result[1] + "/" + result[2];
+						$(".mailStatusInformation").html(html);
+
+						if (result[0] == "Email sender idling")
+							admin.clearIntervals();
+					}
+				}
+			});
+			$.get("logs/mailErrors.txt").done(function(result){
+				$(".mailErrorsInformation").text(result);
+			});
+		}, 1000);
+	}
 	this.buildMainPage = function()
 	{
+		this.clearIntervals();
 		this.selectButton("mainbutton");
 		admin.sendAjax("server.fcgi", {action: "adminMain", subAction: "get"}, function(results) {
 			if (!results.success) {
@@ -133,6 +165,8 @@ function AdminUtil()
 				}
 				content.append(buttonContainer)
 				content.append("<br/><br/>");
+
+				admin.createMainPageInterval();
 			}
 			addAdminAction("Send Payment Requests", "When you request payment", [
 				"TODO: everything...",
@@ -140,6 +174,9 @@ function AdminUtil()
 				"Email will tell the current balance of the user",
 				"Email will include the information how to pay"],
 				"Sending Payment Request. Are you sure?", {subAction: "sendPaymentRequest"}, "Payment request sent!", false);
+
+			content.append("Email sender:<div style='border: solid 1px black'><div style='margin-bottom: 10px;' class='mailStatusInformation'></div><div class='mailErrorsInformation'></div></div>");
+			admin.createMainPageInterval();
 
 			addAdminAction("Clear history", "When you clear history", [
 				"Current data will be saved as a log .csv file",
@@ -179,6 +216,7 @@ function AdminUtil()
 
 	this.buildUsersOrItems = function(isUsers, buttonId, action, smallCaseName, bigCaseName)
 	{
+		this.clearIntervals();
 		var buttonId = isUsers ? "usersbutton" : "itemsbutton";
 		var action = isUsers ? "adminUsers" : "adminItems";
 		var smallCaseName = isUsers ? "user" : "item";
@@ -639,6 +677,7 @@ function AdminUtil()
 
 	this.buildPiikkauksetPage = function()
 	{
+		this.clearIntervals();
 		this.selectButton("piikkauksetbutton");
 
 		admin.sendAjax("server.fcgi", {action: "adminPiikkaukset"}, function(results) {
@@ -692,6 +731,7 @@ function AdminUtil()
 
 	this.buildPaymentsPage = function()
 	{
+		this.clearIntervals();
 		this.selectButton("paymentsbutton");
 
 		admin.sendAjax("server.fcgi", {action: "adminPayments"}, function(results) {
@@ -737,6 +777,7 @@ function AdminUtil()
 
 	this.buildLogsPage = function()
 	{
+		this.clearIntervals();
 		this.selectButton("logsbutton");
 		admin.sendAjax("server.fcgi", {action: "adminLogs", subAction: "get"}, function(results) {
 			if (!results.success) {

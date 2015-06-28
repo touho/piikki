@@ -158,16 +158,20 @@ def reportPaymentImpl(id, value, date):
 	return mysqlUtil.commitSQLCommand(sql)
 
 def sendPasswordLinkByEmail(userId, password, newUser):
-	sql = "select name from users where id=" + str(userId) + ";"
+	sql = "select name,email from users where id=" + str(userId) + ";"
 	username = mysqlUtil.fetchWithSQLCommand(sql)
+	email = ""
 	if len(username) > 0:
+		email = str(username[0][1])
 		username = str(username[0][0])
 
 	link = config.baseUrl + "?id=" + str(userId) + "&p=" + password
 
    	# TODO: Send email
    	message = "Error"
+   	subject = "Error"
    	if newUser:
+   		subject = "Piikkitunnuksesi"
    		message = """Hei, """ + username + """!
 
 Sinulle on tehty tunnukset piikkisivulle. Aktivoi tunnuksesi syöttämällä salasana osoiteessa:
@@ -175,12 +179,15 @@ Sinulle on tehty tunnukset piikkisivulle. Aktivoi tunnuksesi syöttämällä sal
 
 Terveisin: Piikki        Mestari"""
    	else:
+   		subject = "Piikkisalasanasi on resetoitu"
    		message = """Hei, """ + username + """!
 
 Salasanasi piikkisivulla on resetoitu. Syötä uusi salasana osoiteessa:
 """ + link + """
 
 Terveisin: Piikki        Mestari"""
+
+	util.sendEmail(email, username, subject, message)
 
    	# DEBUG: write it to a file
 	with open("logs/emailDebug.txt", "w") as myfile:
