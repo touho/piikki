@@ -93,6 +93,8 @@ function AdminUtil()
 
 	this.createMainPageInterval = function()
 	{
+		this.clearIntervals();
+		var emptyCalls = 7;
 		emailPollingInterval = setInterval(function(){
 			$.get("logs/mailStatus.txt").done(function(result){
 				if (result)
@@ -105,12 +107,20 @@ function AdminUtil()
 						$(".mailStatusInformation").html(html);
 
 						if (result[0] == "Email sender idling")
-							admin.clearIntervals();
+						{
+							emptyCalls--;
+							if (emptyCalls < 0)
+								admin.clearIntervals();
+						}
 					}
 				}
 			});
 			$.get("logs/mailErrors.txt").done(function(result){
-				$(".mailErrorsInformation").text(result);
+				result = result.split("\n");
+				$(".mailErrorsInformation").text("");
+				for (var i = 0; i < result.length; i++) {
+					$(".mailErrorsInformation").append($("<div>").text(result[i]));
+				};
 			});
 		}, 1000);
 	}
@@ -141,6 +151,7 @@ function AdminUtil()
 								alert("Error! " + doneText + " And it failed!")
 							admin.buildMainPage();
 						});
+						admin.createMainPageInterval();
 					}
 				});
 
@@ -165,15 +176,13 @@ function AdminUtil()
 				}
 				content.append(buttonContainer)
 				content.append("<br/><br/>");
-
-				admin.createMainPageInterval();
 			}
 			addAdminAction("Send Payment Requests", "When you request payment", [
 				"TODO: everything...",
 				"An email will be sent to all users",
 				"Email will tell the current balance of the user",
 				"Email will include the information how to pay"],
-				"Sending Payment Request. Are you sure?", {subAction: "sendPaymentRequest"}, "Payment request sent!", false);
+				"Sending Payment Request. Are you sure?", {subAction: "sendPaymentRequest"}, "Payment requests sent!", false);
 
 			content.append("Email sender:<div style='border: solid 1px black'><div style='margin-bottom: 10px;' class='mailStatusInformation'></div><div class='mailErrorsInformation'></div></div>");
 			admin.createMainPageInterval();

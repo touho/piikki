@@ -15,3 +15,7 @@ baseUrl=''
 mail_address='myusername@gmail.com'
 mail_username='myusername'
 mail_password='password'
+
+#Piikki account information:
+bank_username='Piikki Mestari'
+bank_address='IBAN_ABCDEFGHIJKLMN'

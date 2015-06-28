@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime, math
-from .. import mysqlUtil, util
+from .. import mysqlUtil, util, config
 from adminLogs import writeLogFiles
 from adminUsers import reportPaymentImpl
 import time
@@ -65,30 +65,64 @@ def sendPaymentRequest():
 	users = mysqlUtil.getAllUsers()
 
 	with open("logs/mailErrors.txt", "w") as myfile:
-		myfile.write("Errors:\n")
+		try:
+			myfile.write("Errors:\n")
+		except:
+			pass
 
 	def setStatus(status, sent, total):
-		with open("logs/mailStatus.txt", "w") as myfile:
-   			myfile.write(status + "\n")
-   			myfile.write(str(sent) + "\n")
-   			myfile.write(str(total) + "\n")
+		try:
+			with open("logs/mailStatus.txt", "w") as myfile:
+	   			myfile.write(status + "\n")
+	   			myfile.write(str(sent) + "\n")
+	   			myfile.write(str(total) + "\n")
+	   	except:
+	   		pass
 
 	total = len(users)
 	sent = 0
 
 	for user in users:
+		userId = user[0]
 		name = user[1]
 		email = user[2]
-		balance = user[3]
+		isAdmin = user[3]
+
+		sql = """
+select id, name, email, isAdmin,
+(ROUND(IFNULL(SUM(payments.value),0),2)-piikkaukset) as balance
+from
+(select id, name, email, isAdmin, ROUND(IFNULL(SUM(piikkaukset.price),0),2) as piikkaukset
+from users
+left join piikkaukset on users.id = piikkaukset.userId
+group by users.id) as subTable
+left join payments on subTable.id = payments.userId
+where subTable.id = """+ str(userId) + """
+group by subTable.id;
+		"""
+		userInformation = mysqlUtil.fetchWithSQLCommand(sql);
+		balance = float(userInformation[0][4])
 
 		date = datetime.datetime.today().strftime("%d.%m.%Y")
 
 		# get rid of negative zero
-		balanceStr = "%.2f" % math.copysign(-balance, -balance+0.0001)
+		saldoStr = "%.2f" % math.copysign(balance, balance+0.0001)
+		billStr = "%.2f" % math.copysign(-balance, -balance+0.0001)
+
+		saldoStr = saldoStr.replace(".", ",")
+		billStr = billStr.replace(".", ",")
 
 		subject = "Piikkilaskusi " + date
 		message = "Hei, " + name + "!\n\n"
-		message += "Piikkilaskusi on " + balanceStr + "e."
+		message += "Piikkitilisi saldo on " + saldoStr + ".\n\n"
+
+		if balance < 0.0001:
+			message += "Maksathan piikkilaskusi mahdollisimman pian!\n\n"
+			message += "Nimi: "+config.bank_username+"\n"
+			message += "Tili: "+config.bank_address+"\n"
+			message += "Summa: " + billStr + "\n"
+		else:
+			message += "Saldosi on positiivinen, joten sinulta ei vaadita toimenpiteitä."
 
 		try:
 			util.sendEmail(email, name, subject, message)
@@ -101,11 +135,27 @@ def sendPaymentRequest():
 		time.sleep(2);
 
 		with open("logs/emailDebug.txt", "w") as myfile:
-   			myfile.write(message)
+			try:
+   				myfile.write(message)
+   			except:
+   				pass
 
-	setStatus("Emails sent", sent, total)
-	time.sleep(10)
-	setStatus("Email sender idling", 0, 0)
+   	try:
+		setStatus("Emails sent", sent, total)
+	except:
+		pass
+	time.sleep(5)
+
+	# Do this two times to make sure the status is written
+	try:
+		setStatus("Email sender idling", 0, 0)
+	except:
+		pass
+	time.sleep(1)
+	try:
+		setStatus("Email sender idling", 0, 0)
+	except:
+		pass
 
 	return "ok"
 
