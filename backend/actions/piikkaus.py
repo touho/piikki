@@ -2,26 +2,28 @@
 
 from .. import mysqlUtil, util
 
-requiredParameters = ["userId", "itemId", "value"]
+requiredParameters = ["userId", "itemId", "value", "originalUser"]
 
 def execute(fieldStorage):
 	userId = fieldStorage["userId"].value
 	itemId = fieldStorage["itemId"].value
 	value = fieldStorage["value"].value
 	ip = fieldStorage.ip
+	originalUser = fieldStorage["originalUser"].value
 
-	result = piikkaus(userId, itemId, value, ip)
+	result = piikkaus(userId, itemId, value, ip, originalUser)
 	
 	return {"success": result == "ok", "message": result}
 
 
 
 #Validate and do piikkaus
-def piikkaus(userId, itemId, value, ip):
+def piikkaus(userId, itemId, value, ip, originalUser):
 	userId = int(userId)
 	itemId = int(itemId)
 	value = int(value)
 	ip = str(ip)
+	originalUser = str(originalUser).replace('"', '').replace("'", '')
 
 	if value > -100 and value < 100 and value is not 0:
 		con = mysqlUtil.getConnection()
@@ -30,7 +32,7 @@ def piikkaus(userId, itemId, value, ip):
 
 		if mysqlUtil.isValidUserId(userId, con):
 			if mysqlUtil.isValidItemId(itemId, con):
-				ret = piikkausImpl(userId, itemId, value, ip, con)
+				ret = piikkausImpl(userId, itemId, value, ip, originalUser, con)
 				t = util.Timer("commit")
 				con.commit()
 				t.write();
@@ -56,9 +58,9 @@ insert into piikkaukset (userId, itemId, value, price, date, ip) VALUES(1, 1, 1,
 """
 
 #Piikkaus without validation
-def piikkausImpl(userId, itemId, value, ip, con):
+def piikkausImpl(userId, itemId, value, ip, originalUser, con):
 	priceQuery = "(select price*"+str(value)+" from items where id="+str(itemId)+")"
-	sql = "insert into piikkaukset (userId, itemId, value, price, date, ip) VALUES("+str(userId)+", "+str(itemId)+", "+str(value)+", "+priceQuery+", NOW(), '"+str(ip)+"');"
+	sql = "insert into piikkaukset (userId, itemId, value, price, date, ip, originalUser) VALUES("+str(userId)+", "+str(itemId)+", "+str(value)+", "+priceQuery+", NOW(), '"+str(ip)+"', '"+str(originalUser)+"');"
 	cur = con.cursor()
 	ret = cur.execute(sql)
 	cur.close()

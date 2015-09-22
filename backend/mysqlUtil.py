@@ -68,7 +68,8 @@ def createTables():
 			value int,
 			price float,
 			date datetime,
-			ip varchar(127));"""
+			ip varchar(127),
+			originalUser varchar(127));"""
 
 		createPaymentsTable = """create table if not exists payments (
 			userId int not null, 
@@ -122,7 +123,8 @@ def getAllPiikkaukset(limit=0):
 			piikkaukset.value as value, 
 			piikkaukset.price as price, 
 			DATE_FORMAT(piikkaukset.date, '%Y-%m-%d %H:%i:%S') as date, 
-			piikkaukset.ip as ip
+			piikkaukset.ip as ip,
+			piikkaukset.originalUser as originalUser
 			from piikkaukset left join users on piikkaukset.userId = users.id left join items on piikkaukset.itemId = items.id
 			order by piikkaukset.date""" + limitStr)
 

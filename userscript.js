@@ -118,12 +118,22 @@ function UserUtil()
 
 				addBlock("<h2>Viimeisimmät piikkauksesi</h2>");
 				for (var i = 0; i < piikkausInfo.length; i++) {
-					var name = piikkausInfo[i][1];
+					var itemName = piikkausInfo[i][1];
 					var value = parseInt(piikkausInfo[i][2]);
 					var date = piikkausInfo[i][3];
 					var ip = "IP: " + piikkausInfo[i][4];
+					var originalUser = piikkausInfo[i][5];
 
-					addRow(date, name + (value == 1 ? "" : value), ip, "right");
+					if (value != 1)
+					{
+						itemName += " " + value;
+					}
+					if (originalUser != name)
+					{
+						itemName += " ("+originalUser+")";
+					}
+
+					addRow(date, itemName, ip, "right");
 				};
 				if (piikkausInfo.length == 0)
 				{

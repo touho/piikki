@@ -707,7 +707,8 @@ function AdminUtil()
 					"<th>Value</th>" +
 					"<th>Price</th>" +
 					"<th>Date</th>" +
-					"<th>IP</th>"
+					"<th>IP</th>" +
+					"<th>OriginalUser</th>"
 				));
 
 				function addToTable(item) {
@@ -719,7 +720,8 @@ function AdminUtil()
 					.append($("<td/>").text(item[4]))
 					.append($("<td/>").text(item[5]))
 					.append($("<td/>").text(item[6]))
-					.append($("<td/>").text(item[7]));
+					.append($("<td/>").text(item[7]))
+					.append($("<td/>").text(item[8]));
 					table.append(tr);
 				}
 

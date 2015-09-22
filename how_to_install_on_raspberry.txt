@@ -40,6 +40,8 @@ sudo pico sites-available/default
 	Order allow,deny
 	allow from all
 ----------------------------------------------
+- and enable cgi if needed
+
 
 
 -----
@@ -52,6 +54,7 @@ mysql -u root -p
 - Insert password (step 5)
 GRANT ALL ON piikki.* TO piikki@'%' IDENTIFIED BY 'piikkipassword';
 - Replace 'piikkipassword' with the password you entered in step 7
+- You also need to “create database piikki;”
 
 11. Logs folder permissions:
 chmod a+w logs

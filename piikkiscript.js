@@ -143,7 +143,7 @@ function PiikkiUtil()
 		triedPiikkaukset += value;
 		piikki.refreshPiikkausNumber();
 
-		piikki.sendAjax("server.fcgi", {action: "piikkaus", userId: userId, itemId: itemId, value: value}, function(results) {
+		piikki.sendAjax("server.fcgi", {action: "piikkaus", userId: userId, itemId: itemId, value: value, originalUser: localStorage ? localStorage["piikkiOriginalUsername"] : ""}, function(results) {
 			if (results.success)
 			{
 				successfulPiikkaukset += value;
@@ -295,7 +295,11 @@ function PiikkiUtil()
 				if (results.success)
 				{
 					piikki.common_password = results.common_password;
-					if (window["localStorage"]) localStorage["piikkiCommonPassword"] = piikki.common_password;
+					if (window["localStorage"])
+					{
+						localStorage["piikkiCommonPassword"] = piikki.common_password;
+						localStorage["piikkiOriginalUsername"] = user.value;
+					}
 
 					piikki.getUsers(function(){
 						var userId = piikki.getUserIdByName(user.value);
@@ -412,6 +416,8 @@ function PiikkiUtil()
 					piikki.selectUser(autocompleteUsers[piikki.selectedAutocompleteIndex].id);
 				else if (autocompleteUsers.length > 0)
 					piikki.selectUser(autocompleteUsers[0].id);
+				else
+					alert("Käyttäjä '" + $("#nameinput").val() + "' ei ole piikin jäsen. Piikki Mestari voi lisätä sinut jäseneksi.");
 				
 				e.preventDefault();
 				e.stopPropagation();
