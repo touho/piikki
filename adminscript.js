@@ -114,6 +114,13 @@ function AdminUtil()
 						}
 					}
 				}
+			}).fail(function(){
+				$(".mailStatusInformation").html("Status: Email sender idling");
+				emptyCalls -= 3;
+				if (emptyCalls < 0)
+				{
+					admin.clearIntervals();
+				}
 			});
 			$.get("logs/mailErrors.txt").done(function(result){
 				result = result.split("\n");
