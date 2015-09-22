@@ -25,7 +25,11 @@ def piikkaus(userId, itemId, value, ip, originalUser):
 	ip = str(ip)
 	originalUser = str(originalUser).replace('"', '').replace("'", '')
 
-	if value > -100 and value < 100 and value is not 0:
+	if value < 0 and not canUndoPiikkaus(userId, itemId):
+		return "Can't do two negative pikkaus a row."
+
+
+	if value >= -1 and value <= 10 and value is not 0:
 		con = mysqlUtil.getConnection()
 
 		if con is None: return "invalid connection"
@@ -69,3 +73,23 @@ def piikkausImpl(userId, itemId, value, ip, originalUser, con):
 		return "ok"
 	else:
 		return "error while inserting piikkaus"
+
+def canUndoPiikkaus(userId, itemId):
+	userId = int(userId)
+	itemId = int(itemId)
+
+	sql = "select value from piikkaukset where userId="+str(userId)+" and itemId="+str(itemId)+" order by orderId desc limit 1;"
+	con = mysqlUtil.getConnection()
+	if con:
+		cur = con.cursor()
+		cur.execute(sql)
+		rows = cur.fetchall()
+		cur.close()
+		con.close()
+
+		if len(rows) == 0:
+			return False
+
+		return int(rows[0][0]) > 0
+	else:
+		return True

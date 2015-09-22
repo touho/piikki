@@ -41,7 +41,7 @@ def fetchWithSQLCommand(sql):
 	return None
 
 def dropTables():
-	return commitSQLCommand("drop table users, items, piikkaukset, payments;");
+	return commitSQLCommand("drop table IF EXISTS users, items, piikkaukset, payments;");
 
 
 def createTables():
@@ -63,18 +63,22 @@ def createTables():
 			primary key (id) );"""
 
 		createPiikkauksetTable = """create table if not exists piikkaukset (
+			orderId int not null auto_increment,
 			userId int not null, 
 			itemId int not null,
 			value int,
 			price float,
 			date datetime,
 			ip varchar(127),
-			originalUser varchar(127));"""
+			originalUser varchar(127),
+			primary key (orderId));"""
 
 		createPaymentsTable = """create table if not exists payments (
+			orderId int not null auto_increment,
 			userId int not null, 
 			value float,
-			date date);"""
+			date date,
+			primary key (orderId));"""
 
 		cur = con.cursor()
 		cur.execute(createUsersTable)
@@ -82,6 +86,7 @@ def createTables():
 		cur.execute(createPiikkauksetTable)
 		cur.execute(createPaymentsTable)
 		cur.close()
+		con.commit()
 		con.close()
 
 def resetPiikkauksetAndPayments():

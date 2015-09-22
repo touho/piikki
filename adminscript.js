@@ -178,7 +178,6 @@ function AdminUtil()
 				content.append("<br/><br/>");
 			}
 			addAdminAction("Send Payment Requests", "When you request payment", [
-				"TODO: everything...",
 				"An email will be sent to all users",
 				"Email will tell the current balance of the user",
 				"Email will include the information how to pay"],
