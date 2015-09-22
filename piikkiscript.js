@@ -308,7 +308,10 @@ function PiikkiUtil()
 					//piikki.buildUserPage();
 				}
 				else
+				{
 					piikki.debugLog("Unable to authenticate.");
+					alert("Tunnistautuminen epäonnistui");
+				}
 			});
 		}
 	}
