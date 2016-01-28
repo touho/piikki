@@ -116,11 +116,16 @@ group by subTable.id;
 		message = "Hei, " + name + "!\n\n"
 		message += "Piikkitilisi saldo on " + saldoStr + ".\n\n"
 
-		if balance < 0.0001:
+		if balance < -0.0001:
 			message += "Maksathan piikkilaskusi mahdollisimman pian!\n\n"
-			message += "Nimi: "+config.bank_username+"\n"
+			message += "Saaja: "+config.bank_username+"\n"
 			message += "Tili: "+config.bank_address+"\n"
 			message += "Summa: " + billStr + "\n"
+
+			if balance < -50:
+				message += "\nOletpas sinä juonut! Taidat olla huppelissa nytkin. Muistathan, että liian iso piikkisaldo voi viedä piikkausoikeuden.\n"
+		elif balance < 0.0001:
+			break
 		else:
 			message += "Saldosi on positiivinen, joten sinulta ei vaadita toimenpiteitä."
 

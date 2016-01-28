@@ -21,6 +21,8 @@ function piikkiBegin()
 	}
 
 	if (piikki.common_password.length > 0) {
+		piikki.createLogoutButton();
+
 		var userId = piikki.getUserIdFromUrl();
 		if (!isNaN(userId))
 		{
@@ -51,6 +53,17 @@ function PiikkiUtil()
 
 	this.users = [];
 	this.items = [];
+
+	this.createLogoutButton = function() {
+		$("#logout").append($("<span>").text("Unohda selain").click(function() {
+			if (confirm("Oletko varma? Tämän jälkeen selain on tunnistettava uudelleen nimellä ja salasanalla."))
+			{
+				localStorage.piikkiCommonPassword = "";
+				localStorage["piikkiOriginalUsername"] = "";
+				location.reload();
+			}
+		}));
+	}
 
 	this.reset = function()
 	{
@@ -143,7 +156,7 @@ function PiikkiUtil()
 		triedPiikkaukset += value;
 		piikki.refreshPiikkausNumber();
 
-		piikki.sendAjax("server.fcgi", {action: "piikkaus", userId: userId, itemId: itemId, value: value, originalUser: localStorage ? localStorage["piikkiOriginalUsername"] : ""}, function(results) {
+		piikki.sendAjax("server.cgi", {action: "piikkaus", userId: userId, itemId: itemId, value: value, originalUser: localStorage ? localStorage["piikkiOriginalUsername"] : ""}, function(results) {
 			if (results.success)
 			{
 				successfulPiikkaukset += value;
@@ -156,7 +169,7 @@ function PiikkiUtil()
 					if (value > 0)
 						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " piikattu! <button id='undoButton' class='action-button undo-button' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Peruuta</button>";
 					else
-						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " undottu.";
+						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " ei sittenkään maistunut. Piikkaus peruuttu.";
 
 					if (undoTimeout)
 						clearTimeout(undoTimeout);
@@ -178,7 +191,7 @@ function PiikkiUtil()
 	}
 	this.getUsers = function(callback, failCallback)
 	{
-		piikki.sendAjax("server.fcgi", {action: "getUsers"}, function(results) {
+		piikki.sendAjax("server.cgi", {action: "getUsers"}, function(results) {
 			if (results.success)
 			{
 				piikki.users = results.users;
@@ -197,7 +210,7 @@ function PiikkiUtil()
 	}
 	this.getItems = function(callback)
 	{
-		piikki.sendAjax("server.fcgi", {action: "getItems"}, function(results) {
+		piikki.sendAjax("server.cgi", {action: "getItems"}, function(results) {
 			if (results.success)
 			{
 				piikki.items = results.items;
@@ -291,9 +304,10 @@ function PiikkiUtil()
 		var pass = document.getElementById("passwordinput");
 
 		if (user && pass && user.value.length > 0 && pass.value.length > 0) {
-			piikki.sendAjax("server.fcgi", {username: user.value, password: pass.value}, function(results) {
+			piikki.sendAjax("server.cgi", {username: user.value, password: pass.value}, function(results) {
 				if (results.success)
 				{
+					piikki.createLogoutButton();
 					piikki.common_password = results.common_password;
 					if (window["localStorage"])
 					{
@@ -499,10 +513,16 @@ function PiikkiUtil()
 			alert("Salasanan syöttö uudelleen epäonnistui.");
 			return;
 		}
-		piikki.sendAjax("server.fcgi", {userId: changePasswordUserId, oldPassword: changePasswordPassword, newPassword: newPassword}, function(results) {
+		piikki.sendAjax("server.cgi", {userId: changePasswordUserId, oldPassword: changePasswordPassword, newPassword: newPassword}, function(results) {
 			if (results.success)
 			{
+				console.log(results);
+				
 				piikki.common_password = results.common_password;
+
+				if (!localStorage["piikkiOriginalUsername"])
+					localStorage["piikkiOriginalUsername"] = "User id " + changePasswordUserId;
+
 				if (window["localStorage"]) localStorage["piikkiCommonPassword"] = piikki.common_password;
 				//piikki.buildUserPage();
 				alert("Salasanan vaihto onnistui!");
@@ -561,6 +581,8 @@ function PiikkiUtil()
 		{
 			var params = window.location.search.substr(1);
 			var idIndex = params.indexOf("userId=") + 7;
+			//window.location.replace("/");
+			window.history.replaceState({}, "", "./");
 			return parseInt(params.substr(idIndex));
 		}
 		catch(e)

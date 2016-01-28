@@ -341,3 +341,13 @@ input[type="checkbox"]:focus {
   }
 
 }
+
+#logout {
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  display: inline-block;
+  color: #ccc;
+  font-size: 12px;
+  cursor: pointer;
+}

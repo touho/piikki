@@ -174,15 +174,15 @@ def sendPasswordLinkByEmail(userId, password, newUser):
    		subject = "Piikkitunnuksesi"
    		message = """Hei, """ + username + """!
 
-Sinulle on tehty tunnukset piikkisivulle. Aktivoi tunnuksesi syöttämällä salasana osoiteessa:
+Sinulle on tehty tunnukset piikkisivulle. Aktivoi tunnuksesi syöttämällä salasana osoitteessa:
 """ + link + """
 
 Terveisin: Piikki        Mestari"""
    	else:
-   		subject = "Piikkisalasanasi on resetoitu"
+   		subject = "Piikkisalasanasi on nollattu"
    		message = """Hei, """ + username + """!
 
-Salasanasi piikkisivulla on resetoitu. Syötä uusi salasana osoiteessa:
+Salasanasi piikkisivulle on nollattu. Syötä uusi salasana osoiteessa:
 """ + link + """
 
 Terveisin: Piikki        Mestari"""

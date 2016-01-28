@@ -51,7 +51,7 @@ function UserUtil()
 			return;
 		}
 
-		piikki.sendAjax("server.fcgi", {action: "userPage", subAction: "get", userId: userId, password: userPassword}, function(results) {
+		piikki.sendAjax("server.cgi", {action: "userPage", subAction: "get", userId: userId, password: userPassword}, function(results) {
 			if (results.success)
 			{
 				var userInfo = results.userInformation;
@@ -128,10 +128,12 @@ function UserUtil()
 					{
 						itemName += " " + value;
 					}
-					if (originalUser != name)
+					/*
+					if (originalUser && originalUser != name)
 					{
 						itemName += " ("+originalUser+")";
 					}
+					*/
 
 					addRow(date, itemName, ip, "right");
 				};
@@ -168,7 +170,7 @@ function UserUtil()
 						return;
 					}
 
-					piikki.sendAjax("server.fcgi", {userId: userId, oldPassword: userPassword, newPassword: newPassword}, function(results) {
+					piikki.sendAjax("server.cgi", {userId: userId, oldPassword: userPassword, newPassword: newPassword}, function(results) {
 						if (results.success)
 						{
 							userPassword = newPassword;
@@ -191,7 +193,7 @@ function UserUtil()
 					var newEmail = prompt("Inser your email", email);
 					if (newEmail)
 					{
-						piikki.sendAjax("server.fcgi", {action: "userPage", subAction: "changeEmail", userId: userId, password: userPassword, email: newEmail}, function(results) {
+						piikki.sendAjax("server.cgi", {action: "userPage", subAction: "changeEmail", userId: userId, password: userPassword, email: newEmail}, function(results) {
 							if (results.success)
 							{
 								user.buildInfo();
