@@ -111,7 +111,7 @@ function UserUtil()
 
 				addRow("Nimi", name, null, "left");
 				addRow("Email", email, null, "left");
-				addRow("Saldo", balance + "€", null, "left")
+				addRow("Saldo", balance, null, "left")
 				if (isAdmin)
 					addRow("Admin", "Kyllä", null, "left");
 				content.append(div);
@@ -148,7 +148,7 @@ function UserUtil()
 					var value = parseInt(paymentInformation[i][1]);
 					var date = paymentInformation[i][2];
 
-					addRow(date, value + "€", null, "right");
+					addRow(date, value, null, "right");
 				};
 
 				if (paymentInformation.length == 0)
