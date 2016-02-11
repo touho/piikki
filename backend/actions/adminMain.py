@@ -153,12 +153,12 @@ group by subTable.id;
 
 	# Do this two times to make sure the status is written
 	try:
-		setStatus("Email sender idling", 0, 0)
+		setStatus("Email sender ready", 0, 0)
 	except:
 		pass
 	time.sleep(1)
 	try:
-		setStatus("Email sender idling", 0, 0)
+		setStatus("Email sender ready", 0, 0)
 	except:
 		pass
 

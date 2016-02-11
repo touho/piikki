@@ -106,7 +106,7 @@ function AdminUtil()
 							html += "Progress: " + result[1] + "/" + result[2];
 						$(".mailStatusInformation").html(html);
 
-						if (result[0] == "Email sender idling")
+						if (result[0] == "Email sender ready")
 						{
 							emptyCalls--;
 							if (emptyCalls < 0)
@@ -115,7 +115,7 @@ function AdminUtil()
 					}
 				}
 			}).fail(function(){
-				$(".mailStatusInformation").html("Status: Email sender idling");
+				$(".mailStatusInformation").html("Status: Email sender ready");
 				emptyCalls -= 3;
 				if (emptyCalls < 0)
 				{
