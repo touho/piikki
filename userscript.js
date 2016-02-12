@@ -145,7 +145,7 @@ function UserUtil()
 
 				addBlock("<h2>Viimeisimmät maksusi</h2>");
 				for (var i = 0; i < paymentInformation.length; i++) {
-					var value = parseInt(paymentInformation[i][1]);
+					var value = parseFloat(paymentInformation[i][1]);
 					var date = paymentInformation[i][2];
 
 					addRow(date, value, null, "right");
