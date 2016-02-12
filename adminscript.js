@@ -671,7 +671,7 @@ function AdminUtil()
 					}
 					setTimeout(function(){loadButton.val("");}, 5000);
 				});
-				content.append("<br/>Add users from csv file: ").append(loadButton);
+				content.append("<br/>Add users from csv file ( UTF-8 REQUIRED! ): ").append(loadButton);
 			}
 
 			content.append("<br/>").append(inputArea);
