@@ -731,9 +731,9 @@ function AdminUtil()
 					table.append(tr);
 				}
 
-				for (var i = piikkaukset.length-1; i >= 0; i--) {
+				for (var i = 0; i < piikkaukset.length; i++) {
 					addToTable(piikkaukset[i]);
-				};
+				}
 
 				container.append(table);
 

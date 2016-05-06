@@ -131,7 +131,7 @@ def getAllPiikkaukset(limit=0):
 			piikkaukset.ip as ip,
 			piikkaukset.originalUser as originalUser
 			from piikkaukset left join users on piikkaukset.userId = users.id left join items on piikkaukset.itemId = items.id
-			order by piikkaukset.date""" + limitStr)
+			order by piikkaukset.orderId desc""" + limitStr)
 
 def getAllPayments(limit=0):
 	if limit == 0:

@@ -35,7 +35,7 @@ sudo pico sites-available/default
 - set /home/pi/piikki options:
 ----------------------------------------------
 	Options ExecCGI FollowSymLinks MultiViews
-	AddHandler cgi-script .fcgi
+	AddHandler cgi-script .cgi
 	AllowOverride None
 	Order allow,deny
 	allow from all
