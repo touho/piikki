@@ -125,7 +125,7 @@ group by subTable.id;
 			if balance < -50:
 				message += "\nOletpas sinä juonut! Taidat olla huppelissa nytkin. Muistathan, että liian iso piikkisaldo voi viedä piikkausoikeuden.\n"
 		elif balance < 0.0001:
-			break
+			continue
 		else:
 			message += "Saldosi on positiivinen, joten sinulta ei vaadita toimenpiteitä."
 
