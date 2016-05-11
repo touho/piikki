@@ -122,7 +122,7 @@ function AdminUtil()
 					admin.clearIntervals();
 				}
 			});
-			$.get("logs/mailErrors.txt").done(function(result){
+			$.get("logs/mailErrors.txt?rnd=" + Math.random()).done(function(result){
 				result = result.split("\n");
 				$(".mailErrorsInformation").text("");
 				for (var i = 0; i < result.length; i++) {
