@@ -385,6 +385,82 @@ function AdminUtil()
 						valueInput.focus();
 					});
 
+					var infoButton = $("<button/>").text("User info").click(function() {
+						admin.sendAjax("server.cgi", {
+							action: action,
+							subAction: "userInformation",
+							userId: parseInt(id.text())
+						}, function(infoResults) {
+							console.log(infoResults);
+							if (infoResults.success)
+							{
+								var piikkaukset = infoResults.message.info.piikkaukset;
+								var payments = infoResults.message.info.payments;
+								inputArea.empty();
+
+								inputArea.append(name.text() + ' piikkaukset (max 20):<br>');
+								piikkaukset.forEach(p => {
+									var [quantity, name, price, date, ip, originalUser] = p;
+
+									inputArea.append(quantity + ' x ' + name + ' for ' + price + 'e on ' + date + ' ip=' + ip + ' originalUser=' + originalUser + '<br>');
+								});
+
+								inputArea.append(name.text() + ' payments (max 20):<br>');
+								payments.forEach(p => {
+									var [value, date] = p;
+
+									inputArea.append(value + 'e on ' + date + '<br>');
+								});
+							}
+							else
+								admin.debugLog("Error while infoing: " + infoResults.message);
+						});
+					});
+
+
+					/*
+
+		admin.sendAjax("server.cgi", {action: "adminPayments"}, function(results) {
+			if (!results.success) {
+				admin.buildAuthenticationPage();
+				return;
+			}
+			if (results.success)
+			{
+				var payments = results.payments; //ordered list
+				var container = admin.createTableContainer();
+				var table = $("<table/>").css({"border": "1px solid black"});
+				table.append($("<tr/>").append(
+					"<th>Id</th>" +
+					"<th>Name</th>" +
+					"<th>Value</th>" +
+					"<th>Date</th>"
+				));
+
+				function addToTable(item) {
+					var tr = $("<tr/>");
+					tr.append($("<td/>").text(item[0]))
+					.append($("<td/>").text(item[1]))
+					.append($("<td/>").text(item[2].toFixed(2)))
+					.append($("<td/>").text(item[3]));
+					table.append(tr);
+				}
+
+				for (var i = 0; i < payments.length; i++) {
+					addToTable(payments[i]);
+				}
+
+				container.append(table);
+
+				content.empty().append(container);
+
+				sorttable.makeSortable(table.get(0));
+			}
+			else
+				admin.debugLog("Unable to get payments.");
+		});
+					*/
+
 					var resetPasswordButton = $("<button/>").text("Reset Password").click(function() {
 						if (!confirm("Are you sure you want to reset user's password and set it by email?")) return;
 						admin.sendAjax("server.cgi", {
@@ -446,6 +522,7 @@ function AdminUtil()
 				if (isUsers)
 				{
 					td.append(paymentButton);
+					td.append(infoButton);
 					td.append(resetPasswordButton);
 					td.append(removeButton);
 				}

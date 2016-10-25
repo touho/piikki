@@ -30,6 +30,9 @@ def execute(fieldStorage):
 	elif subAction == "resetPassword":
 		ret = resetPassword(fieldStorage)
 		return {"success": ret == "ok", "message": ret}
+	elif subAction == "userInformation":
+		ret = getUserInformation(fieldStorage)
+		return {"success": True, "message": ret}
 	else:
 		return "unknown subAction " + str(subAction)
 
@@ -192,3 +195,45 @@ Terveisin: Piikki        Mestari"""
    	# DEBUG: write it to a file
 	with open("logs/emailDebug.txt", "w") as myfile:
    		myfile.write(message)
+
+def getUserInformation(fieldStorage):
+	requredParams = ["userId"]
+	if not validationUtil.requirePOSTParameters(fieldStorage, requredParams):
+		return "invalid sub params. required: " + str(requredParams)
+
+	userId = int(fieldStorage["userId"].value)
+
+	sql = "select * from payments where userId = "+str(userId)+";"
+
+
+	sql = """
+select p.value, DATE_FORMAT(date, '%a %d.%m.%Y %H:%i') as date
+from payments p
+where userId = """ + str(userId) + """
+order by p.orderId desc
+limit 20;
+	"""
+
+	paymentResults = mysqlUtil.fetchWithSQLCommand(sql);
+
+
+	sql = """
+select value, i.name, p.price, DATE_FORMAT(date, '%a %d.%m.%Y %H:%i') as date, ip, originalUser
+from piikkaukset p
+join items i on i.id = p.itemId
+where userId = """ + str(userId) + """
+order by p.orderId desc
+limit 20;
+	"""
+
+	piikkauksetResults = mysqlUtil.fetchWithSQLCommand(sql);
+
+
+	if paymentResults == None:
+		return {"success": False, "message": "fail: " + str(paymentResults) }
+	elif piikkauksetResults == None:
+		return {"success": False, "message": "fail: " + str(piikkauksetResults) }
+	else:
+		return {"success": True, "info": { "piikkaukset": piikkauksetResults, "payments": paymentResults }}
+
+
