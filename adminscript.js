@@ -777,9 +777,9 @@ function AdminUtil()
 					table.append(tr);
 				}
 
-				for (var i = payments.length-1; i >= 0; i--) {
+				for (var i = 0; i < payments.length; i++) {
 					addToTable(payments[i]);
-				};
+				}
 
 				container.append(table);
 

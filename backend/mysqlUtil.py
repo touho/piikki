@@ -140,7 +140,7 @@ def getAllPayments(limit=0):
 		limitStr = " limit " + str(limit) + ";"
 	return fetchWithSQLCommand("""select payments.userId as userId, users.name as userName, payments.value as value, DATE_FORMAT(payments.date, '%Y-%m-%d') as date
 			from payments left join users on payments.userId = users.id
-			order by payments.date""" + limitStr)
+			order by payments.date desc""" + limitStr)
 
 def isValidUsernameAndPassword(username, password):
 	passwordHash = util.encrypt(password);
