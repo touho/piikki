@@ -137,7 +137,7 @@ function PiikkiUtil()
 
 
 	var undoTimeout = null;
-	this.piikkaus = function(itemId, value)
+	this.piikkaus = function(itemId, value, buttonElement)
 	{
 		$("#undoDiv").animate({
 			opacity: 0.0
@@ -166,9 +166,10 @@ function PiikkiUtil()
 				var undoDiv = document.getElementById("undoDiv");
 				if (undoDiv)
 				{
-					if (value > 0)
+					if (value > 0) {
 						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " piikattu! <button id='undoButton' class='action-button undo-button' onclick='piikki.piikkaus("+itemId+", "+(-value)+");'>Peruuta</button>";
-					else
+						animateButton(buttonElement);
+					} else
 						undoDiv.innerHTML = piikki.getItemNameById(itemId) + " ei sittenkään maistunut. Piikkaus peruuttu.";
 
 					if (undoTimeout)
@@ -280,7 +281,7 @@ function PiikkiUtil()
 
 			code += "<div id='piikkausbuttons' class=\"justified-adjustment\">";
 			function createItem(id, name) {
-				code += "<div onclick=\"piikki.piikkaus('"+id+"',1)\" class='button'>"+name+"</div>";
+				code += "<div onclick=\"piikki.piikkaus('"+id+"',1,this);\" class='button'>"+name+"</div>";
 				//code += "<button onclick=\"piikki.piikkaus('"+id+"',1)\">" + name + "</button>";
 			}
 			for (var i = 0; i < piikki.items.length; i++)
@@ -649,6 +650,15 @@ function PiikkiUtil()
 		document.body.style.setProperty("cursor", "progress", "important");
 		xmlhttp.send(msg);
 	}
+}
+
+function animateButton(element) {
+	var numberOfAnimations = 6;
+	var num = (Math.random() * numberOfAnimations | 0) + 1;
+	$(element).addClass('animation' + num);
+	setTimeout(function() {
+		$(element).removeClass('animation' + num);
+	}, 1000);
 }
 
 var help = "Reset piikki page: piikki.reset();";

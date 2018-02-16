@@ -355,3 +355,79 @@ input[type="checkbox"]:focus {
   font-size: 12px;
   cursor: pointer;
 }
+
+
+
+
+@keyframes anim1 {
+    0%   {transform: scale(1);}
+    50%  {transform: scale(1.7);}
+    100%   {transform: scale(1);}
+}
+.animation1 {
+    position: relative;
+    animation-name: anim1;
+    animation-duration: 1s;
+}
+
+@keyframes anim2 {
+    0%   {transform: scale(1);}
+    50%  {transform: scale(0.3);}
+    100%   {transform: scale(1);}
+}
+.animation2 {
+    position: relative;
+    animation-name: anim2;
+    animation-duration: 1s;
+}
+
+@keyframes anim3 {
+    0%   {transform: scale(1);}
+    50%  {transform: scale(-1);}
+    100%   {transform: scale(1);}
+}
+.animation3 {
+    position: relative;
+    animation-name: anim3;
+    animation-duration: 1s;
+}
+
+@keyframes anim4 {
+    0%   {transform: rotate(360deg);}
+    100%   {transform: rotate(0deg);}
+}
+.animation4 {
+    position: relative;
+    animation-name: anim4;
+    animation-duration: 1s;
+}
+
+@keyframes anim5 {
+    0%   {transform: rotate(0deg);}
+    100%   {transform: rotate(360deg);}
+}
+.animation5 {
+    position: relative;
+    animation-name: anim5;
+    animation-duration: 1s;
+}
+
+@keyframes anim6 {
+    0%   {opacity: 1;}
+    10%   {opacity: 0;}
+    20%   {opacity: 1;}
+    30%   {opacity: 0;}
+    40%   {opacity: 1; background-color: #5f5;}
+    50%   {opacity: 0; background-color: transparent;}
+    60%   {opacity: 1;}
+    70%   {opacity: 0;}
+    80%   {opacity: 1; background-color: #5f5;}
+    90%   {opacity: 0; background-color: transparent;}
+    100%   {opacity: 1;}
+}
+.animation6 {
+    background-color: transparent;
+    position: relative;
+    animation-name: anim6;
+    animation-duration: 1s;
+}
